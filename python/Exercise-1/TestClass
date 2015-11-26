@@ -1,0 +1,29 @@
+'''
+Created on 24.11.2015
+
+@author: Oxana
+'''
+from Buffer import Buffer
+from pip._vendor.distlib.compat import raw_input
+
+class TestClass:
+    
+    
+    def main():  # @NoSelf
+        x = int(input("Enter buffer length: "))
+        b1 = Buffer(x);
+        print("your buffer has a size of : " + str(x))
+        index = 0
+        while index < 10:
+            print( "Enter a integer for buffer: ")
+            number = raw_input()
+            print("my number = " + str(number))
+            b1.addObject(number, index)
+            index+=1
+        
+    if __name__ == "main":
+        main()
+        
+    main()       
+    
+    
