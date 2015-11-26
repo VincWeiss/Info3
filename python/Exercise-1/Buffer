@@ -1,0 +1,25 @@
+'''
+Created on 24.11.2015
+
+@author: Oxana
+'''
+indexNext = 0
+
+class Buffer: #The class Buffer
+    
+    def __init__(self, likablesize):
+        self.likablesize = likablesize
+        self.buffer = [None]* likablesize
+    
+    #Creates a new buffer with all places set to zero
+    def addObject(self, number , index):
+        print(self.buffer)
+        if index < len(self.buffer) : 
+            self.buffer [index] = number
+            print(str(self.buffer[index]) + "  <---  this is the number related to place :  " + str(index))
+            print(self.buffer)
+            
+        return self.buffer
+            #Attention, buffer is global variable  and also the parameter!
+    
+        
