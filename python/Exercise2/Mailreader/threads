@@ -95,3 +95,4 @@ class threadclass(threading.Thread):
         assert type(newTurnValue) != None and type(newTurnValue) == int
         threadclass.turn = newTurnValue
         
+#End of Module
