@@ -85,7 +85,7 @@ class threadclass(threading.Thread):
         print(eduAdresses)
 
     '''
-    getter: checks for typesecurity and null
+    getter: checks for typesecurity and None
             returns the 'turn' variable
     '''
     def getReadersTurn():  # @NoSelf
