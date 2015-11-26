@@ -1,7 +1,7 @@
 '''
 Created on 25.11.2015
 
-@author: Vinc
+@author: Vinc, Oxi, Marco
 '''
 import threading
 import linecache
