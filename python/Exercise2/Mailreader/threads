@@ -1,0 +1,97 @@
+'''
+Created on 25.11.2015
+
+@author: Vinc
+'''
+import threading
+import linecache
+from test.test_typechecks import Integer
+'''
+this is the class where the threads have their own methods to assign their tasks
+'''
+class threadclass(threading.Thread):
+   
+    readLineAmount = 1
+    sharedMailadressList = list()
+    turn = Integer
+    whosTurn = False
+    isSharedMailadressListReady = False
+    lock = threading.Lock
+
+    def __init__(self):
+        self = self
+    '''    
+    To make sure the Threads read One by One we use the turn variable.
+    At the moment we need the 'readLineAmount' to ensure we only read the Lines in our txt.
+    Later it should read as long as the txt has Lines available
+    Each thread sets the 'TurnFlag', so the next Thread knows that he s ready. 
+    '''        
+        
+    
+    def readFirstFile():  # @NoSelf
+        threadclass.setReadersTurn(1)
+        while threadclass.readLineAmount <= 100:
+            if threadclass.getReadersTurn() is 1:
+                threadclass.readThisFile("mails1")
+                threadclass.setReadersTurn(2)
+    
+    '''
+    The method does the same as 'readFirstFile'. 
+    DONE :: Later it should be possible to have the code in a third method and just run it by the threads method
+    '''
+    def readSecondFile():  # @NoSelf
+        while threadclass.readLineAmount <= 100:
+            if threadclass.getReadersTurn() is 2:
+                threadclass.readThisFile("mails2")
+                threadclass.setReadersTurn(1)
+                threadclass.readLineAmount += 1
+        if threadclass.readLineAmount is 100:
+            threadclass.isSharedMailadressListReady = True
+    
+    '''
+    opens the file with the name given and copies the line No:'readLineAmount'
+    '''
+    def readThisFile(fileName):  # @NoSelf
+        lineString = str(linecache.getline(fileName+ ".txt", threadclass.readLineAmount))
+        threadclass.sharedMailadressList.append(lineString)
+                
+        
+        print("Mail" + str(threadclass.turn) + " : THE LINE IS " + lineString)
+        print(str(threadclass.turn) + " started " + str(threadclass.readLineAmount))
+    
+    '''
+    Method copies all lines that contain '.edu' in another list and counts it's size
+    '''
+    def CountForString():  # @NoSelf
+        print("THREEEEEEEE")
+        print(threadclass.sharedMailadressList)
+        amountOfEdu = 0
+        threadclass.readLineAmount = 200
+        eduAdresses = list()
+        
+        while threadclass.readLineAmount > 0:
+            line = threadclass.sharedMailadressList.pop()
+            threadclass.readLineAmount -= 1
+            
+            if ".edu" in line:
+                eduAdresses.append(line)
+                print("added= " + line)
+                amountOfEdu += 1
+                print(".edu Counter is = " + str(amountOfEdu))
+            else :
+                print("not added=" + line)
+                
+        print("Document has " + str(amountOfEdu) + " .edu Adresses!")
+        print(eduAdresses)
+
+    '''
+    getter: checks for typesecurity and null
+            returns the 'turn' variable
+    '''
+    def getReadersTurn():  # @NoSelf
+        assert type(threadclass.turn) != None and type(threadclass.turn) == int
+        return threadclass.turn
+    def setReadersTurn(newTurnValue):  # @NoSelf
+        assert type(newTurnValue) != None and type(newTurnValue) == int
+        threadclass.turn = newTurnValue
+        
