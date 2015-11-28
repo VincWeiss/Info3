@@ -4,21 +4,21 @@ Created on 24.11.2015
 @author: Oxana
 '''
 from Buffer import Buffer
+from Producer import Producer
 from pip._vendor.distlib.compat import raw_input
 
 class TestClass:
     
     
     def main():  # @NoSelf
-        x = int(input("Enter buffer length: "))
-        b1 = Buffer(x);
-        print("your buffer has a size of : " + str(x))
+        buffersize = int(input("Enter buffer length: "))
+        print("your buffer has a size of : " + str(buffersize))
+        producerAmount = int(input("Enter amount of Producer: "))
+        print("your amount of Producer : " + str(producerAmount))
         index = 0
-        while index < 10:
-            print( "Enter a integer for buffer: ")
-            number = raw_input()
-            print("my number = " + str(number))
-            b1.addObject(number, index)
+        p1 = Producer(producerAmount , buffersize)
+        while index < buffersize:
+            p1.putToBuffer(index)
             index+=1
         
     if __name__ == "main":
