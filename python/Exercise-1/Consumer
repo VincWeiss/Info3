@@ -1,0 +1,26 @@
+
+from Buffer import Buffer
+from random import randint
+import threading
+from threading import current_thread
+
+class Consumer(threading.Thread):
+
+
+#INDEX as parameter is missing, should be given by thread object!
+
+
+    def __init__(self, amountConsumer, buffersize):
+        self.amountConsumer = amountConsumer
+        self.buffersize = buffersize
+        self.prBuffer = Buffer(buffersize)
+    
+    def run():  # @NoSelf
+        Consumer.getFromBuffer(index)
+        print("Thread: " + str(current_thread()) + " started")
+    
+    def getFromBuffer(self, index):
+        objReceived = self.prBuffer.getObject(index)
+        print("Consumer nameX took Object: " + str(objReceived) + "from the Buffer. \n" )   
+        
+#EndOfClass
