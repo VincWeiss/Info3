@@ -5,7 +5,8 @@ Created on 26.11.2015
 '''
 from Buffer import Buffer
 from random import randint
-class Producer:
+import threading
+class Producer(threading.Thread):
     
     def __init__(self, amountProducer, buffersize):
         self.amountProducer = amountProducer
@@ -18,4 +19,8 @@ class Producer:
     
     def putToBuffer(self, index):
         self.prBuffer.addObject(Producer.generateRandomNumb(), index)
-        
+    
+    def runProducer(index):  # @NoSelf
+        print("Thread Producer started")
+        print("the parameter index : " + str(index))
+        Producer.putToBuffer(index)   
