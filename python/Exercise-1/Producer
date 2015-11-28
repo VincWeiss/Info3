@@ -1,0 +1,21 @@
+'''
+Created on 26.11.2015
+
+@author: Oxana
+'''
+from Buffer import Buffer
+from random import randint
+class Producer:
+    
+    def __init__(self, amountProducer, buffersize):
+        self.amountProducer = amountProducer
+        self.buffersize = buffersize
+        self.prBuffer = Buffer(buffersize)
+    
+    def generateRandomNumb():  # @NoSelf
+        randomNumber = randint(1,100)
+        return randomNumber
+    
+    def putToBuffer(self, index):
+        self.prBuffer.addObject(Producer.generateRandomNumb(), index)
+        
