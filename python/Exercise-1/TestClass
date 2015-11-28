@@ -3,23 +3,30 @@ Created on 24.11.2015
 
 @author: Oxana
 '''
-from Buffer import Buffer
 from Producer import Producer
 from pip._vendor.distlib.compat import raw_input
+import threading
 
 class TestClass:
     
     
     def main():  # @NoSelf
+        
         buffersize = int(input("Enter buffer length: "))
         print("your buffer has a size of : " + str(buffersize))
         producerAmount = int(input("Enter amount of Producer: "))
         print("your amount of Producer : " + str(producerAmount))
+        
         index = 0
-        p1 = Producer(producerAmount , buffersize)
+        #p1 = Producer(producerAmount , buffersize)
+        nameProd = producerAmount
+        
         while index < buffersize:
-            p1.putToBuffer(index)
-            index+=1
+            p1Thread = threading.Thread(name='Producer' + str(nameProd), target = Producer.runProducer(index))
+            p1Thread.start()
+            #p1.putToBuffer(index)
+            nameProd -= 1
+            index += 1
         
     if __name__ == "main":
         main()
