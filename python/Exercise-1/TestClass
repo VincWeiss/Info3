@@ -3,9 +3,13 @@ Created on 24.11.2015
 
 @author: Oxana
 '''
-from Producer import Producer
 from pip._vendor.distlib.compat import raw_input
+from Buffer import Buffer
+from Producer import Producer
 import threading
+from fileinput import DEFAULT_BUFSIZE
+
+pcpBuffer = Buffer(DEFAULT_BUFSIZE)
 
 class TestClass:
     
@@ -18,13 +22,13 @@ class TestClass:
         print("your amount of Producer : " + str(producerAmount))
         
         index = 0
-        #p1 = Producer(producerAmount , buffersize)
         nameProd = producerAmount
+        pcpBuffer = Buffer(buffersize)
         
         while index < buffersize:
             p1Thread = threading.Thread(name='Producer' + str(nameProd), target = Producer.runProducer(index))
             p1Thread.start()
-            #p1.putToBuffer(index)
+            print(pcpBuffer)
             nameProd -= 1
             index += 1
         
