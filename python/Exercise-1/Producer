@@ -6,21 +6,22 @@ Created on 26.11.2015
 from Buffer import Buffer
 from random import randint
 import threading
+
+
 class Producer(threading.Thread):
     
-    def __init__(self, amountProducer, buffersize):
-        self.amountProducer = amountProducer
-        self.buffersize = buffersize
-        self.prBuffer = Buffer(buffersize)
+    def __init__(self, index):
+        self.index = index
     
     def generateRandomNumb():  # @NoSelf
         randomNumber = randint(1,100)
         return randomNumber
     
     def putToBuffer(self, index):
-        self.prBuffer.addObject(Producer.generateRandomNumb(), index)
+        self.pcpBuffer.addObject(Producer.generateRandomNumb(), index)
     
     def runProducer(index):  # @NoSelf
         print("Thread Producer started")
         print("the parameter index : " + str(index))
-        Producer.putToBuffer(index)   
+        p1 = Producer(index)
+        p1.putToBuffer(index)   
