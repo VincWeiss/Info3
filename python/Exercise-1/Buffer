@@ -3,15 +3,14 @@ Created on 24.11.2015
 
 @author: Oxana
 '''
-indexNext = 0
-
 class Buffer: #The class Buffer
     
+    #creates a buffer of a preferred size with all values set to none
     def __init__(self, likablesize):
         self.likablesize = likablesize
         self.buffer = [None]* likablesize
     
-    #Creates a new buffer with all places set to zero
+    #insert a number at index
     def addObject(self, number , index):
         print(self.buffer)
         if index < len(self.buffer) : 
@@ -20,6 +19,35 @@ class Buffer: #The class Buffer
             print(self.buffer)
             
         return self.buffer
-            #Attention, buffer is global variable  and also the parameter!
     
+    def getNextObject(self, index):
+        nextObj = None
+        if index is not None:
+            if index < len(self.buffer):
+                nextObj = self.buffer[index]
+                return nextObj
+            elif index is len(self.buffer):
+                nextObj = self.buffer[0]
+                return nextObj
+            
+    def isBufferEmpty(self): 
+        bufferIsEmpty = True
+        for item in self.buffer:
+            if item is None:
+                bufferIsEmpty = True
+            else:
+                bufferIsEmpty = False
+                return bufferIsEmpty
+        return bufferIsEmpty
+    
+    def isBufferFull(self):
+        bufferIsFull = False
+        for item in self.buffer:
+            if item is None:
+                bufferIsFull = False
+            else: 
+                bufferIsFull = True
+                return bufferIsFull
+        return bufferIsFull
         
+#end of class
