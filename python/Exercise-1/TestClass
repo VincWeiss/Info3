@@ -1,29 +1,32 @@
 '''
-Created on 24.11.2015
+Created on 29.11.2015
 
 @author: Oxana
 '''
-from Buffer import Buffer
+import Buffer
 from Producer import Producer
-from pip._vendor.distlib.compat import raw_input
+import threading
+from Consumer import Consumer
+from _socket import timeout
 
-class TestClass:
-    
-    
-    def main():  # @NoSelf
-        buffersize = int(input("Enter buffer length: "))
-        print("your buffer has a size of : " + str(buffersize))
-        producerAmount = int(input("Enter amount of Producer: "))
-        print("your amount of Producer : " + str(producerAmount))
-        index = 0
-        p1 = Producer(producerAmount , buffersize)
-        while index < buffersize:
-            p1.putToBuffer(index)
-            index+=1
+if __name__ == '__main__':
+    pass
+    buffersize = int(input("Enter buffer length: "))
+    print("your buffer has a size of : " + str(buffersize))
+    producerAmount = int(input("Enter amount of Producer: "))
+    print("your amount of Producer : " + str(producerAmount))
+    consumerAmount = int(input("Enter amount of Consumer: "))
+    print("your amount of Consumer : " + str(consumerAmount))
         
-    if __name__ == "main":
-        main()
+    Buffer.pcpBuffer = Buffer.Buffer(buffersize)
         
-    main()       
+    p1Thread = threading.Thread(name='Producer', target = Producer.runProducer(producerAmount))
+    print("-------- PENIS HIHIHIHI ------------")
+    p2Thread = threading.Thread(name= 'Consumer', target = Consumer.runConsumer(consumerAmount))
+    p1Thread.start()
+    p2Thread.start()
+    p1Thread.join()
+    p2Thread.join()
+    print("p2 Startet -----------------------------------------------------------------------------------")
     
     
