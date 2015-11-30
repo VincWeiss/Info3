@@ -3,23 +3,75 @@ Created on 24.11.2015
 
 @author: Oxana
 '''
-indexNext = 0
+from fileinput import DEFAULT_BUFSIZE
 
 class Buffer: #The class Buffer
     
-    def __init__(self, likablesize):
-        self.likablesize = likablesize
-        self.buffer = [None]* likablesize
+    pushIndex = 0
+    popIndex  = 0
+    isSpaceToWrite = True
+    isProductToConsume = False
     
-    #Creates a new buffer with all places set to zero
-    def addObject(self, number , index):
-        print(self.buffer)
-        if index < len(self.buffer) : 
-            self.buffer [index] = number
-            print(str(self.buffer[index]) + "  <---  this is the number related to place :  " + str(index))
+    #creates a buffer of a preferred size with all values set to none
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.buffer = [None]* capacity
+        #pcpBuffer = self.buffer
+    
+    def push(self,inValue):
+        if self.getPushIndex() < len(self.buffer) : 
+            self.buffer[self.getPushIndex()] = inValue
             print(self.buffer)
+            self.raisePushIndex()
             
-        return self.buffer
-            #Attention, buffer is global variable  and also the parameter!
     
+    def popNext(self):
+        output = self.buffer[self.getPopIndex()]
+        self.buffer[self.getPopIndex()] = None
+        self.raisePopIndex()
+        return output
+    
+    def getPushIndex(self):
+        if Buffer.pushIndex < len(self.buffer):
+            return Buffer.pushIndex
+        else:
+            Buffer.pushIndex =0
+            return Buffer.pushIndex
         
+        
+    def getPopIndex(self):
+        if Buffer.popIndex < len(self.buffer):
+            return Buffer.popIndex
+        else:
+            Buffer.popIndex = 0
+            return Buffer.popIndex
+            
+    def raisePushIndex(self):
+        if self.getPushIndex() is (len(self.buffer)-1) :
+            Buffer.pushIndex=0
+            Buffer.isProductToConsume = True
+            print("isProductToConsume = True")
+        else:
+            Buffer.pushIndex +=1
+            Buffer.isProductToConsume = True
+            print("isProductToConsume = True")
+        if self.getPushIndex() is self.getPopIndex():
+            Buffer.isSpaceToWrite = False
+            print("IsSpaceToWrite = False")
+            
+    def raisePopIndex(self):    
+        if self.getPopIndex() is (len(self.buffer)-1) :
+            Buffer.popIndex=0
+            Buffer.isSpaceToWrite = True
+            print("IsSpaceToWrite = True")
+        else:
+            Buffer.popIndex +=1
+            Buffer.isSpaceToWrite = True
+            print("IsSpaceToWrite = True")
+        if self.getPopIndex() is self.getPushIndex():
+            Buffer.isProductToConsume = False
+            print("PUSH == POP")
+        
+    
+#end of class
+pcpBuffer = Buffer(DEFAULT_BUFSIZE)
