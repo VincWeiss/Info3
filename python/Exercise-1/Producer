@@ -3,19 +3,54 @@ Created on 26.11.2015
 
 @author: Oxana
 '''
-from Buffer import Buffer
 from random import randint
-class Producer:
+import Buffer
+from time import sleep
+from threading import Event
+from Buffer import pcpBuffer
+
+
+class Producer():
     
-    def __init__(self, amountProducer, buffersize):
-        self.amountProducer = amountProducer
-        self.buffersize = buffersize
-        self.prBuffer = Buffer(buffersize)
+    haswrittentobuffer = False
+    producerQueue = []
+
+    def __init__(self, producerid):
+        self.producerid = producerid
+        self.pcpBuffer = Buffer.pcpBuffer
     
     def generateRandomNumb():  # @NoSelf
         randomNumber = randint(1,100)
         return randomNumber
     
-    def putToBuffer(self, index):
-        self.prBuffer.addObject(Producer.generateRandomNumb(), index)
+    def putToBuffer(self):
+        self.pcpBuffer.push(Producer.generateRandomNumb())
+        Producer.haswrittentobuffer = True
+
+    
+    def runProducer(producerAmount):  # @NoSelf
+        print("Thread Producer started")
+        i = 0
+        while i < producerAmount:
+            prodID = i + 1
+            print("the id of the producer " + str(prodID))
+            producer = Producer(prodID)
+            Producer.producerQueue.append(producer)
+            i += 1   
+            
+        x = 0
+        while True:
+            sleep(4)
+            for producer in Producer.producerQueue:
+                print("the id of the PRODUCER " + str(producer.producerid))
+                pcpBuffer.isEmpty()
+                while pcpBuffer.isBufferEmpty is True:  
+                    producer.putToBuffer()
+                    sleep(2)
+                    #x += 1
+                else:
+                    print("Not Allowed to Produce")
+                    sleep(2)
+            
         
+#end class
