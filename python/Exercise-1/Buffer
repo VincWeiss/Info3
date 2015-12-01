@@ -3,23 +3,82 @@ Created on 24.11.2015
 
 @author: Oxana
 '''
-indexNext = 0
+from fileinput import DEFAULT_BUFSIZE
 
 class Buffer: #The class Buffer
     
-    def __init__(self, likablesize):
-        self.likablesize = likablesize
-        self.buffer = [None]* likablesize
+    pushIndex = 0
+    popIndex  = 0
+    isSpaceToWrite = True
+    isProductToConsume = False
+    isBufferFull = False
+    isBufferEmpty = True
     
-    #Creates a new buffer with all places set to zero
-    def addObject(self, number , index):
+    #creates a buffer of a preferred size with all values set to none
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.buffer = [None]* capacity
+        #pcpBuffer = self.buffer
+    
+    def nextTurn(self):
+        itVar = self.capacity -1
         print(self.buffer)
-        if index < len(self.buffer) : 
-            self.buffer [index] = number
-            print(str(self.buffer[index]) + "  <---  this is the number related to place :  " + str(index))
-            print(self.buffer)
-            
-        return self.buffer
-            #Attention, buffer is global variable  and also the parameter!
+        if self.buffer[itVar] is None:
+            while itVar > 0:
+                tempVar = self.buffer[itVar-1]
+                self.buffer[itVar -1] = None
+                self.buffer[itVar] = tempVar
+                itVar -= 1
+        else:
+            print("ISFULL")
+                
+    def push(self,inValue):
+        if self.buffer[0] is None : 
+            self.buffer[0] = inValue
+            return True
+        #else:
+             
+            #print("no space to write available")
     
+            
+    
+    def pop(self):
+        if self.buffer[self.capacity -1] is not None:
+            output = self.buffer[self.capacity -1]
+            self.buffer[self.capacity -1] = None
+            #print("set to none at index : " + str(self.capacity -1))
+            return output
+        #else:
+            #print("nothing to pop")
+            #RETURN
+    
+    def getPushIndex(self):
+        if Buffer.pushIndex < len(self.buffer):
+            return Buffer.pushIndex
+        else:
+            Buffer.pushIndex =0
+            return Buffer.pushIndex
         
+        
+    def getPopIndex(self):
+        if Buffer.popIndex < len(self.buffer):
+            return Buffer.popIndex
+        else:
+            Buffer.popIndex = 0
+            return Buffer.popIndex
+            
+    def isFull(self):
+        if self.buffer[2] is not None:
+            self.isBufferFull = True
+            print("is full --------------------------------------!")
+        else:
+            self.isBufferFull = False
+        
+    def isEmpty(self):
+        if self.getPushIndex() <= len(self.buffer):
+            self.isBufferEmpty = True
+        else: 
+            self.isBufferEmpty = False
+    
+#end of class
+pcpBuffer = Buffer(DEFAULT_BUFSIZE)
