@@ -1,26 +1,39 @@
 
-from Buffer import Buffer
-from random import randint
+'''
+Created on 29.11.2015
+
+@author: Oxana
+'''
+import Buffer
 import threading
-from threading import current_thread
+from time import sleep
+from Buffer import pcpBuffer
 
-class Consumer(threading.Thread):
-
-
-#INDEX as parameter is missing, should be given by thread object!
-
-
-    def __init__(self, amountConsumer, buffersize):
-        self.amountConsumer = amountConsumer
-        self.buffersize = buffersize
-        self.prBuffer = Buffer(buffersize)
+class Consumer():
     
-    def run():  # @NoSelf
-        Consumer.getFromBuffer(index)
-        print("Thread: " + str(current_thread()) + " started")
+    consumerQueue = []
     
-    def getFromBuffer(self, index):
-        objReceived = self.prBuffer.getObject(index)
-        print("Consumer nameX took Object: " + str(objReceived) + "from the Buffer. \n" )   
+    def __init__(self, consumerid):
+        self.consumerid = consumerid
+        self.pcpBuffer = Buffer.pcpBuffer
         
-#EndOfClass
+    def getFromBuffer(self):
+        numberFromBuffer = self.pcpBuffer.pop()
+        if numberFromBuffer is not None:
+            print("Consumer NR."+ str(self.consumerid) + " got the Item: " + str(numberFromBuffer))
+        
+    def runConsumer(consumerAmount):  # @NoSelf
+        i = 0
+        while i < consumerAmount:
+            consID = i + 1
+            #print("the id of the consumer " + str(consID))
+            consumer = Consumer(consID)
+            Consumer.consumerQueue.append(consumer)
+            i += 1   
+            
+        while True:
+            for consumer in Consumer.consumerQueue:
+                #print("Consumers turn: " + str(consumer.consumerid))
+                consumer.getFromBuffer()
+    
+#end class
