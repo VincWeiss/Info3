@@ -1,0 +1,27 @@
+Inf 3 Aufgabe 3
+
+
+a) In Aufgabe 1 sind die Threads sowohl kooperativ, sowie konkurrierend. Sie sind kooperativ, da sie an einer gemeinsamen Aufgabe arbeiten.
+Die Producer befüllen den Buffer und die Consumer lesen dann die Werte aus dem Buffer aus und verarbeiten sie weiter.
+Konkurrierende Threads müssen sich die Betriebsmittel teilen, wie bei Aufgabe 1 der Buffer, 
+allerdings müssen sie nicht an einer gemeinsamen Aufgabe arbeiten.
+
+b)
+Synchronisation: Das bedeutet das Threads ihre Abläufe in Abhängigkeit von anderen Threads steuern,
+wenn also der erste Thread ein Betriebsmittel benutzt, dann wartet der zweite Thread bis der Erste fertig ist.
+Die Threads kommunizieren dafür mit Signalen auch Semaphoren genannt. 
+Kommunikation: Die Threads tauschen Signale untereinander aus, allerdings sind dies nicht nur Semaphoren,
+sondern auch richtige Botschaften die über Pipes, die in Java sogar eigene Klassen namens PipeOutputStream und PipeInputStream
+Koordination: Dies beschreibt nur die Zusammenfassung der Begriffe Synchronisation und Kommunikation.
+
+c)
+Für zwei Threads ist es nur dann möglich eine echte Nebenläufigkeit zu besitzen, wenn die Architektur zwei Prozesse simultan 
+ausführen kann, dafür ist ein Multi-CPU oder Multi-Core CPUs  von Nöten. Ansonsten ist es eine scheinbare Nebenläufigkeit, da 
+der Scheduler dann nur zwischen den Threads wechselt.
+
+d)
+Lost-Update-Problem: Das passiert wenn Threads auf die gleiche Information zugreifen wollen und diese verändern wollen
+dann könnte die Änderung des ersten Threads sofort mit der Änderung des zweiten Threads überschrieben werden.
+Dirty-read-Problem: Darunter versteht man, dass wenn ein Thread einen Wert einlesen will, ein anderer Thread allerdings
+diesen Wert im Moment verändert oder löscht, dies aber noch nicht bestätigt hat, probiert der erste Thread einen nicht mehr 
+vorhandenen Wert einzulesen. Dies kann man mit Synchronisation der Threads verhindern.
