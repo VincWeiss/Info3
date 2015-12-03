@@ -7,28 +7,23 @@ import Buffer
 from Producer import Producer
 import threading
 from Consumer import Consumer
-from cons.Buffer import pcpBuffer
-from time import sleep
-
+'''
+This is the startclass
+We start the consumer and producer threads and get the parameters 
+'''
 if __name__ == '__main__':
     pass
     buffersize = int(input("Enter buffer length: "))
     consumerAmount = int(input("Enter amount of Consumer: "))
     producerAmount = int(input("Enter amount of Producer: "))
-        
+    
     Buffer.pcpBuffer = Buffer.Buffer(buffersize)
-
-        
+    Buffer.pcpBuffer.isEmpty()
     producerThread = threading.Thread(name='Producer', target = Producer.runProducer, args=(producerAmount,))
     consumerThread = threading.Thread(name= 'Consumer', target = Consumer.runConsumer, args=(consumerAmount,))
     
-    producerThread.setDaemon(True)
-    consumerThread.setDaemon(True)
-    
     producerThread.start()
     consumerThread.start()
-    while True:
-        Buffer.pcpBuffer.nextTurn()
-        sleep(1.5)
-    producerThread.join()
-    consumerThread.join()
+    
+    Buffer.pcpBuffer.start()
+    
