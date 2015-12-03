@@ -1,7 +1,7 @@
 '''
 Created on 24.11.2015
 
-@author: Oxana
+@author: Oxana, Vinc, Marco
 '''
 from fileinput import DEFAULT_BUFSIZE
 from time import sleep
