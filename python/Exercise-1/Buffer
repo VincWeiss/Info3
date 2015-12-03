@@ -71,6 +71,7 @@ class Buffer:
     def pop(self):
         if self.buffer[self.capacity -1] is not None:
             output = self.buffer[self.capacity -1]
+            print(self.buffer)
             self.buffer[self.capacity -1] = None
             return output
     '''
