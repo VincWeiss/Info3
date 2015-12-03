@@ -1,39 +1,45 @@
-
 '''
 Created on 29.11.2015
 
 @author: Oxana
 '''
 import Buffer
-import threading
 from time import sleep
-from Buffer import pcpBuffer
+from cons.Buffer import pcpBuffer
 
 class Consumer():
     
     consumerQueue = []
-    
+    '''
+    Constructor
+    @param consumerid 
+        id of the consumer
+    '''
     def __init__(self, consumerid):
         self.consumerid = consumerid
         self.pcpBuffer = Buffer.pcpBuffer
-        
+    '''
+    calls the pop method in the Buffer class and prints the number
+    '''
     def getFromBuffer(self):
         numberFromBuffer = self.pcpBuffer.pop()
         if numberFromBuffer is not None:
             print("Consumer NR."+ str(self.consumerid) + " got the Item: " + str(numberFromBuffer))
-        
+            
+    '''
+    consumer queue gets filled and the consumer are assigned to work
+    @param consumerAmount
+        the amount of consumer the user entered at the start
+    '''   
     def runConsumer(consumerAmount):  # @NoSelf
-        i = 0
-        while i < consumerAmount:
-            consID = i + 1
-            #print("the id of the consumer " + str(consID))
+        consID = 1
+        while consID <= consumerAmount:
             consumer = Consumer(consID)
             Consumer.consumerQueue.append(consumer)
-            i += 1   
-            
+            consID += 1   
         while True:
             for consumer in Consumer.consumerQueue:
-                #print("Consumers turn: " + str(consumer.consumerid))
+                sleep(0.1)
                 consumer.getFromBuffer()
     
 #end class
