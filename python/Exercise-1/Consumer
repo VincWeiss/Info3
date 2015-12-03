@@ -1,15 +1,15 @@
 '''
 Created on 29.11.2015
 
-@author: Oxana
+@author: Oxana, Vinc, Marco
 '''
 import Buffer
 from time import sleep
-from cons.Buffer import pcpBuffer
 
 class Consumer():
     
     consumerQueue = []
+    
     '''
     Constructor
     @param consumerid 
