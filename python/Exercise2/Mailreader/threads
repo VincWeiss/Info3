@@ -1,7 +1,7 @@
 '''
 Created on 25.11.2015
 
-@author: Vinc, Oxi, Marco
+@author: Vinc
 '''
 import threading
 import linecache
@@ -45,8 +45,7 @@ class threadclass(threading.Thread):
                 threadclass.readThisFile("mails2")
                 threadclass.setReadersTurn(1)
                 threadclass.readLineAmount += 1
-        if threadclass.readLineAmount is 100:
-            threadclass.isSharedMailadressListReady = True
+        
     
     '''
     opens the file with the name given and copies the line No:'readLineAmount'
@@ -54,38 +53,38 @@ class threadclass(threading.Thread):
     def readThisFile(fileName):  # @NoSelf
         lineString = str(linecache.getline(fileName+ ".txt", threadclass.readLineAmount))
         threadclass.sharedMailadressList.append(lineString)
-                
+        if threadclass.readLineAmount is 100:
+            threadclass.isSharedMailadressListReady = True
         
         print("Mail" + str(threadclass.turn) + " : THE LINE IS " + lineString)
         print(str(threadclass.turn) + " started " + str(threadclass.readLineAmount))
     
     '''
-    Method copies all lines that contain '.edu' in another list and counts it's size
+    Method copies all lines that end with '.edu' in another list and counts it's size
     '''
     def CountForString():  # @NoSelf
-        print("THREEEEEEEE")
         print(threadclass.sharedMailadressList)
         amountOfEdu = 0
         threadclass.readLineAmount = 200
         eduAdresses = list()
+        suffix = ".edu\n"
         
         while threadclass.readLineAmount > 0:
             line = threadclass.sharedMailadressList.pop()
             threadclass.readLineAmount -= 1
-            
-            if ".edu" in line:
+            if line.endswith(suffix) is True:
                 eduAdresses.append(line)
                 print("added= " + line)
                 amountOfEdu += 1
                 print(".edu Counter is = " + str(amountOfEdu))
-            else :
-                print("not added=" + line)
+            #else :
+                #print("not added=" + line)
                 
         print("Document has " + str(amountOfEdu) + " .edu Adresses!")
         print(eduAdresses)
 
     '''
-    getter: checks for typesecurity and None
+    getter: checks for typesecurity and null
             returns the 'turn' variable
     '''
     def getReadersTurn():  # @NoSelf
@@ -95,4 +94,3 @@ class threadclass(threading.Thread):
         assert type(newTurnValue) != None and type(newTurnValue) == int
         threadclass.turn = newTurnValue
         
-#End of Module
