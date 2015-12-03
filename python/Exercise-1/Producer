@@ -1,7 +1,7 @@
 '''
 Created on 26.11.2015
 
-@author: Oxana
+@author: Oxana, Vinc, Marco
 '''
 from random import randint
 import Buffer
@@ -19,6 +19,7 @@ class Producer():
     def __init__(self, producerid):
         self.producerid = producerid
         self.pcpBuffer = Buffer.pcpBuffer
+        
     '''
     generates a random number between 1 and 100 
     @return randomNumber
@@ -26,6 +27,7 @@ class Producer():
     def generateRandomNumb():  # @NoSelf
         randomNumber = randint(1,100)
         return randomNumber
+    
     '''
     calls the push method from the Buffer class with a random number as value 
     '''
