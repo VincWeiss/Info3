@@ -17,8 +17,9 @@ class Buffer:
     def __init__(self, capacity):
         self.capacity = capacity
         self.buffer = [None]* capacity
+        
     '''
-    This is the reason why the buffer pushes all values to the end
+    Ensures that the buffer is running all the time
     '''
     def start(self):
         while True:
@@ -26,7 +27,7 @@ class Buffer:
             sleep(0.25)
     
     '''
-    This is the reason why the buffer pushes all values to the end
+    This is the reason why the buffer pushes all values to the end and
     prints the buffer
     '''
     
@@ -52,6 +53,7 @@ class Buffer:
             
             if self.buffer[0] is None : 
                 self.buffer[0] = inValue
+                
     '''
     @param inValue
             the object to check for it's type
@@ -64,6 +66,7 @@ class Buffer:
         else:
             print("Object: "+inValue+" is not from the wanted object type (int). " + inValue + " was not added!")
             return False
+    
     '''
     get a object from the buffer
     @return output
@@ -74,6 +77,7 @@ class Buffer:
             print(self.buffer)
             self.buffer[self.capacity -1] = None
             return output
+    
     '''
     asks if the buffer is full
     @return boolean
@@ -86,6 +90,7 @@ class Buffer:
                 return False
             countVar += 1
         return True        
+    
     '''
     asks if the buffer is empty
     @return boolean
@@ -100,4 +105,7 @@ class Buffer:
         return True        
     
 #end of class
+
 pcpBuffer = Buffer(DEFAULT_BUFSIZE)
+
+#end of module 
