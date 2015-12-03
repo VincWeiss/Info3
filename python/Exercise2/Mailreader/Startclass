@@ -4,7 +4,7 @@ Created on 25.11.2015
 @author: Vinc
 '''
 import threading
-from counterp import threads
+import threadclass
 
 
 #The program starts here. The threads get initialized and started in the order the should do their task
@@ -12,14 +12,14 @@ if __name__ == '__main__':
     pass
     print("start")
 
-    SecondReaderThread = threading.Thread(name='SecondReader', target=threads.threadclass.readSecondFile)
-    FirstReaderThread = threading.Thread(name='FirstReader', target=threads.threadclass.readFirstFile)
+    SecondReaderThread = threading.Thread(name='SecondReader', target= threadclass.threadclass.readSecondFile)
+    FirstReaderThread = threading.Thread(name='FirstReader', target = threadclass.threadclass.readFirstFile)
     FirstReaderThread.start()
     SecondReaderThread.start()
     
     FirstReaderThread.join()
     SecondReaderThread.join()
     print("FirstReaderThread readSecondFile finished")
-    CountingThread = threading.Thread(name ='ThirdThread', target = threads.threadclass.CountForString)
+    CountingThread = threading.Thread(name ='ThirdThread', target = threadclass.threadclass.CountForString)
     print("CountingThread initiated")
     CountingThread.start()
