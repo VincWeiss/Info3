@@ -6,42 +6,48 @@ Created on 26.11.2015
 from random import randint
 import Buffer
 from time import sleep
-from Buffer import pcpBuffer
-
 
 class Producer():
     
     producerQueue = []
-    nudel = False
-
+    
+    '''
+    Constructor
+    @param producerid 
+        id of the producer
+    '''
     def __init__(self, producerid):
         self.producerid = producerid
         self.pcpBuffer = Buffer.pcpBuffer
-    
+    '''
+    generates a random number between 1 and 100 
+    @return randomNumber
+    '''
     def generateRandomNumb():  # @NoSelf
         randomNumber = randint(1,100)
         return randomNumber
-    
+    '''
+    calls the push method from the Buffer class with a random number as value 
+    '''
     def putToBuffer(self):
-        self.nudel = self.pcpBuffer.push(Producer.generateRandomNumb())
-        if self.nudel is True:
-            print("Producer NR."+ str(self.producerid) + " put the last Item" )
-            
-
+        self.pcpBuffer.push(Producer.generateRandomNumb())
         
+    '''
+    producer queue gets filled and the producers are assigned to work
+    @param producerAmount
+        the amount of producers the user entered at the start
+    '''
     def runProducer(producerAmount):  # @NoSelf
-        #print("Thread Producer started")
-        i = 0
-        while i < producerAmount:
-            prodID = i + 1
-            #print("the id of the producer " + str(prodID))
+
+        prodID = 1
+        while prodID <= producerAmount:
             producer = Producer(prodID)
             Producer.producerQueue.append(producer)
-            i += 1   
+            prodID += 1   
         
         while True:
             for producer in Producer.producerQueue:
-                #print("the id of the PRODUCER " + str(producer.producerid))
+                sleep(0.1)
                 producer.putToBuffer()
             
         
