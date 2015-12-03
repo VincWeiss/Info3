@@ -1,7 +1,7 @@
 '''
 Created on 29.11.2015
 
-@author: Oxana
+@author: Oxana, Vinc, Marco
 '''
 import Buffer
 from Producer import Producer
@@ -19,6 +19,7 @@ if __name__ == '__main__':
     
     Buffer.pcpBuffer = Buffer.Buffer(buffersize)
     Buffer.pcpBuffer.isEmpty()
+    
     producerThread = threading.Thread(name='Producer', target = Producer.runProducer, args=(producerAmount,))
     consumerThread = threading.Thread(name= 'Consumer', target = Consumer.runConsumer, args=(consumerAmount,))
     
@@ -27,3 +28,4 @@ if __name__ == '__main__':
     
     Buffer.pcpBuffer.start()
     
+#end main method
