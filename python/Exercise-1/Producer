@@ -40,17 +40,18 @@ class Producer():
         the amount of producers the user entered at the start
     '''
     def runProducer(producerAmount):  # @NoSelf
-
-        prodID = 1
-        while prodID <= producerAmount:
-            producer = Producer(prodID)
-            Producer.producerQueue.append(producer)
-            prodID += 1   
+        try:
+            prodID = 1
+            while prodID <= producerAmount:
+                producer = Producer(prodID)
+                Producer.producerQueue.append(producer)
+                prodID += 1   
         
-        while True:
-            for producer in Producer.producerQueue:
-                sleep(0.1)
-                producer.putToBuffer()
+            while True:
+                for producer in Producer.producerQueue:
+                    sleep(0.1)
+                    producer.putToBuffer()
+        except(Exception):
+            print("Producer could not start")
             
-        
 #end class
