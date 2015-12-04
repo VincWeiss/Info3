@@ -33,10 +33,8 @@ class threadclass():
         while t1.isSharedListReady is False:
             if t1.getReadersTurn() is 1:
                 t1.readLineAmount += 1
-                print("t1")
                 t1.readThisFile("mails1")
                 t1.setReadersTurn(2)
-                print("lineamount t1 "+ str(t1.readLineAmount))
         threadclass.globalLineAmount += t1.readLineAmount
                 
     
@@ -49,10 +47,8 @@ class threadclass():
         while t2.isSharedListReady is False:
             if t2.getReadersTurn() is 2:
                 t2.readLineAmount += 1
-                print("t2")
                 t2.readThisFile("mails2")
                 t2.setReadersTurn(1)
-                print("lineamount t2 "+str(t2.readLineAmount))
         threadclass.globalLineAmount += t2.readLineAmount
         
     
@@ -62,7 +58,6 @@ class threadclass():
     def readThisFile(self, fileName):
         lineString = str(linecache.getline(fileName+ ".txt", self.readLineAmount))
         if lineString is "":
-            print("linestring empty")
             self.isSharedListReady = True
             threadclass.globalLineAmount -= 1 
         else:
@@ -74,7 +69,6 @@ class threadclass():
     '''
     def CountForString():  # @NoSelf
         t3 = threadclass(3)
-        print(t3.sharedMailadressList)
         amountOfEdu = 0
         eduAdresses = list()
         suffix = ".edu\n"
@@ -84,7 +78,6 @@ class threadclass():
             threadclass.globalLineAmount -= 1
             if line.endswith(suffix) is True:
                 eduAdresses.append(line)
-                print("added= " + line)
                 amountOfEdu += 1
                 
         print("Document has " + str(amountOfEdu) + " .edu Adresses!")
