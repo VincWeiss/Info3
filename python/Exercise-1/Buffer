@@ -106,6 +106,6 @@ class Buffer:
     
 #end of class
 
-pcpBuffer = Buffer(DEFAULT_BUFSIZE)
+pcpBuffer = None
 
 #end of module 
