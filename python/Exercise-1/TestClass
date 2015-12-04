@@ -13,19 +13,23 @@ We start the consumer and producer threads and get the parameters
 '''
 if __name__ == '__main__':
     pass
-    buffersize = int(input("Enter buffer length: "))
-    consumerAmount = int(input("Enter amount of Consumer: "))
-    producerAmount = int(input("Enter amount of Producer: "))
+    try:
+        buffersize = int(input("Enter buffer length: "))
+        consumerAmount = int(input("Enter amount of Consumer: "))
+        producerAmount = int(input("Enter amount of Producer: "))
     
-    Buffer.pcpBuffer = Buffer.Buffer(buffersize)
-    Buffer.pcpBuffer.isEmpty()
+        Buffer.pcpBuffer = Buffer.Buffer(buffersize)
+        Buffer.pcpBuffer.isEmpty()
     
-    producerThread = threading.Thread(name='Producer', target = Producer.runProducer, args=(producerAmount,))
-    consumerThread = threading.Thread(name= 'Consumer', target = Consumer.runConsumer, args=(consumerAmount,))
+        producerThread = threading.Thread(name='Producer', target = Producer.runProducer, args=(producerAmount,))
+        consumerThread = threading.Thread(name= 'Consumer', target = Consumer.runConsumer, args=(consumerAmount,))
     
-    producerThread.start()
-    consumerThread.start()
+        producerThread.start()
+        consumerThread.start()
     
-    Buffer.pcpBuffer.start()
+        Buffer.pcpBuffer.start()
+        
+    except (ValueError, Exception):
+        print("not valid value input ")
     
 #end main method
