@@ -84,12 +84,15 @@ class Buffer:
         if the buffer is full it returns true
     '''
     def isFull(self):
+        isFull = BOOLEAN
         countVar = 0
         while countVar < self.capacity:
             if self.buffer[countVar] is None:
-                return False
+                isFull = False
+            else:
+                isFull = True
             countVar += 1
-        return True        
+        return isFull       
     
     '''
     asks if the buffer is empty
@@ -97,12 +100,15 @@ class Buffer:
         is the buffer is empty it returns true
     '''    
     def isEmpty(self):
+        isEmpty = BOOLEAN
         countVar = 0
         while countVar < self.capacity:
             if self.buffer[countVar] is not None:
-                return False
+                isEmpty = False
+            else:
+                isEmpty = True
             countVar += 1
-        return True        
+        return isEmpty         
     
 #end of class
 
