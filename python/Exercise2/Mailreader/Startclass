@@ -10,7 +10,6 @@ import threadclass
 #The program starts here. The threads get initialized and started in the order the should do their task
 if __name__ == '__main__':
     pass
-    print("start")
 
     SecondReaderThread = threading.Thread(name='SecondReader', target= threadclass.threadclass.readSecondFile)
     FirstReaderThread = threading.Thread(name='FirstReader', target = threadclass.threadclass.readFirstFile)
@@ -19,7 +18,5 @@ if __name__ == '__main__':
     
     FirstReaderThread.join()
     SecondReaderThread.join()
-    print("FirstReaderThread readSecondFile finished")
     CountingThread = threading.Thread(name ='ThirdThread', target = threadclass.threadclass.CountForString)
-    print("CountingThread initiated")
     CountingThread.start()
