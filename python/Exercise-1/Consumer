@@ -32,14 +32,18 @@ class Consumer():
         the amount of consumer the user entered at the start
     '''   
     def runConsumer(consumerAmount):  # @NoSelf
-        consID = 1
-        while consID <= consumerAmount:
-            consumer = Consumer(consID)
-            Consumer.consumerQueue.append(consumer)
-            consID += 1   
-        while True:
-            for consumer in Consumer.consumerQueue:
-                sleep(0.1)
-                consumer.getFromBuffer()
+        try:
+            consID = 1
+            while consID <= consumerAmount:
+                consumer = Consumer(consID)
+                Consumer.consumerQueue.append(consumer)
+                consID = consID + 1   
+                
+            while True:
+                for consumer in Consumer.consumerQueue:
+                    sleep(0.1)
+                    consumer.getFromBuffer()
+        except(Exception):
+            print("Consumer could not start")
     
 #end class
