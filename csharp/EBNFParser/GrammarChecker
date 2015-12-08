@@ -21,6 +21,8 @@ namespace ConsoleApplication2
         bool CounterIsRaised;
         bool lineOK = true;
         bool parenthesisClosed = true;
+        bool moreLParents = false;
+        bool moreRParents =false;
 
         public void checkFirstPosition(ArrayList inLine)
         {
@@ -41,11 +43,10 @@ namespace ConsoleApplication2
                     break;
                 case "LPAREN":
                     Console.WriteLine("checkFirstPosition case:LPAREN");
-                    openParanthesis++;
                     parenthesisClosed = false;
+                    checkForLParent();
                     Console.WriteLine("Klammer AUF");
                     raiseCounter();
-                    checkForIntOrVar();
                     break;
                 case "WHITESPACE":
                     validWhiteSpace();
@@ -79,7 +80,6 @@ namespace ConsoleApplication2
         void checkForIntOrVar()
         {
             String toCheck = LineToCheck[counter].ToString();
-            Console.WriteLine("CHECKFORINTORVAR " + toCheck);
             switch (toCheck)
             {
                 case "INTEGER" :
@@ -104,6 +104,9 @@ namespace ConsoleApplication2
                     {
                         evaluateLine();
                     }
+                    break;
+                case "RPAREN":
+                    checkForRParent();
                     break;
                 case "WHITESPACE":
                     validWhiteSpace();
@@ -171,12 +174,25 @@ namespace ConsoleApplication2
             String toCheck = LineToCheck[counter].ToString();
             if (toCheck == "LPAREN")
             {
+                Console.WriteLine("OPENPARANTHESIS " + openParanthesis);
+                moreLParents = true;
                 openParanthesis++;
                 raiseCounter();
                 parenthesisClosed = false;
                 Console.WriteLine("Klammer AUF");
             }
-            checkForIntOrVar();
+
+            if (CounterIsRaised == true && moreLParents==false)
+            {
+                lineOK = true;
+                checkForIntOrVar();
+            }
+            else
+            {
+                moreLParents = false;
+                lineOK = false;
+                checkForLParent();
+            }
         }
 
         void checkForRParent()
@@ -187,19 +203,34 @@ namespace ConsoleApplication2
 
                 if (openParanthesis > 0)
                 {
+                    Console.WriteLine("OPENPARANTHESIS " + openParanthesis);
+                    moreRParents = true;
                     openParanthesis--;
+
                     parenthesisClosed = true;
-                    if(raiseCounter()== true)
-                    {
-                        checkForOperator();
-                    }
+                    raiseCounter();
                     Console.WriteLine("Klammer ZU");
                 }
                 else
                 {
                     lineOK = false;
-                    Console.WriteLine("Klammer PROBLÄM");
+                    evaluateLine();
                 }
+            }
+            if (CounterIsRaised == true && moreRParents==false)
+            {
+                lineOK = true;
+                checkForOperator();
+            }
+            else if(CounterIsRaised==true && moreRParents==true)
+            {
+                lineOK = false;
+                moreRParents = false;
+                checkForRParent();
+            }
+            else
+            {
+                evaluateLine();
             }
         }
         void resetGrammarChecker()
@@ -215,7 +246,6 @@ namespace ConsoleApplication2
 
 
 }
-
 
 
 
