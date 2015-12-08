@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Collections;
 using ConsoleApplication2;
-using ConsoleApplication3;
 
 namespace ConsoleApplication2
 {
@@ -20,25 +19,16 @@ namespace ConsoleApplication2
         private int index;
         public static TokenParser testP = new TokenParser();
         System.IO.StreamReader file =
-        new System.IO.StreamReader("d:\\expressions.txt");
-        ArrayList Vincistkuhl = new ArrayList();
+        new System.IO.StreamReader("c:\\Users\\Marco\\documents\\expressions.txt");
 
         public enum Tokens
         {
-            UNDEFINED = 0,
-            EQUALS = 1,
-            IDENTIFIER = 2,
-            FLOAT = 3,
-            INTEGER = 4,
-            APOSTROPHE = 5,
-            LPAREN = 6,
-            RPAREN = 7,
-            OPERATOR = 8,
-            WHITESPACE = 9
-            //ASTERISK = 8,
-            //SLASH = 9,
-            //PLUS = 10,
-            //MINUS = 11
+            IDENTIFIER = 1,
+            INTEGER = 2,
+            LPAREN = 3,
+            RPAREN = 4,
+            OPERATOR = 5,
+            WHITESPACE = 6
         }
 
 
@@ -47,6 +37,20 @@ namespace ConsoleApplication2
             testP.start();
         }
 
+        public TokenParser()
+        {
+            tokenDictionary = new Dictionary<Tokens, string>();
+            regularExpressionsDictionary = new Dictionary<Tokens, MatchCollection>();
+            index = 0;
+            inputString = string.Empty;
+
+            tokenDictionary.Add(Tokens.IDENTIFIER, "[x-zX-Z_][x-zX-Z0-9_]*");
+            tokenDictionary.Add(Tokens.INTEGER, "[0-9]+");
+            tokenDictionary.Add(Tokens.LPAREN, "\\(");
+            tokenDictionary.Add(Tokens.RPAREN, "\\)");
+            tokenDictionary.Add(Tokens.OPERATOR, "[*+-/]");
+            tokenDictionary.Add(Tokens.WHITESPACE, "[ \t]+");
+        }
         void checkLine(String line)
         {
             testP.InputString = line;
@@ -54,16 +58,13 @@ namespace ConsoleApplication2
             ArrayList tokenInLine = new ArrayList();
             ArrayList txtInLine = new ArrayList();
             tokenInLine = testP.GetToken();
-            //Console.WriteLine("txtLine.Capacity" +txtLine.Capacity);
-            //foreach ( Token t in txtLine) { 
-            foreach( Token t in tokenInLine)
+            foreach (Token t in tokenInLine)
             {
-                    String tName = t.TokenName.ToString();
-                    String tValue = t.TokenValue.ToString();
+                String tName = t.TokenName.ToString();
+                String tValue = t.TokenValue.ToString();
                 txtInLine.Add(t.TokenName.ToString());
-                    Console.WriteLine("TokenName: " + tName + "   TokenValue: " + tValue);
+                Console.WriteLine("TokenName: " + tName + "   TokenValue: " + tValue);
             }
-            Console.WriteLine();
             gCheck.checkFirstPosition(txtInLine);
             tokenInLine.Clear();
             tokenInLine.TrimToSize();
@@ -108,26 +109,7 @@ namespace ConsoleApplication2
             string line = "";
             // Read the file and display it line by line.
             line = file.ReadLine();
-            //if (line != null)
-            //{
-            //}
-
-
             return line;
-        }
-
-        void contains(String line, String search)
-        {
-            bool isInLine = line.Contains(search);
-            if (isInLine)
-            {
-                Console.WriteLine("The String: " + line + " contains: " + search);
-                int index = line.IndexOf(search);
-                if (index >= 0)
-                    Console.WriteLine("'{0} begins at character position {1}",
-                                      line, index + 1);
-            }
-            isInLine = false;
         }
 
 
@@ -147,23 +129,6 @@ namespace ConsoleApplication2
             }
         }
 
-        public TokenParser()
-        {
-            tokenDictionary = new Dictionary<Tokens, string>();
-            regularExpressionsDictionary = new Dictionary<Tokens, MatchCollection>();
-            index = 0;
-            inputString = string.Empty;
-
-            tokenDictionary.Add(Tokens.EQUALS, "="); //UNSUSED
-            tokenDictionary.Add(Tokens.IDENTIFIER, "[x-zX-Z_][x-zX-Z0-9_]*");
-            tokenDictionary.Add(Tokens.FLOAT, "[0-9]?\\.+[0-9]+");//UNUSED
-            tokenDictionary.Add(Tokens.INTEGER, "[0-9]+");
-            tokenDictionary.Add(Tokens.APOSTROPHE, "'.*");
-            tokenDictionary.Add(Tokens.LPAREN, "\\(");
-            tokenDictionary.Add(Tokens.RPAREN, "\\)");
-            tokenDictionary.Add(Tokens.OPERATOR, "[*+-/]");
-            tokenDictionary.Add(Tokens.WHITESPACE, "[ \t]+");
-        }
 
         private void prepareRegularExpressions()
         {
@@ -176,7 +141,7 @@ namespace ConsoleApplication2
 
 
 
-            ArrayList tokenList = new ArrayList();
+        ArrayList tokenList = new ArrayList();
         public ArrayList GetToken()
         {
             if (index < inputString.Length)
@@ -203,11 +168,9 @@ namespace ConsoleApplication2
                     }
                 }
                 index++;
-                //return new Token(Tokens.UNDEFINED, string.Empty);
             }
             return tokenList;
         }
     }
 
 }
-
