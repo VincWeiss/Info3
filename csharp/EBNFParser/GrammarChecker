@@ -1,1 +1,221 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApplication2
+{
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    class GrammarCheck
+    {
+        ArrayList LineToCheck = new ArrayList();
+        int counter = 0;
+        int openParanthesis = 0;
+        bool CounterIsRaised;
+        bool lineOK = true;
+        bool parenthesisClosed = true;
+
+        public void checkFirstPosition(ArrayList inLine)
+        {
+            LineToCheck = inLine;
+            LineToCheck.TrimToSize();
+            String posOne = inLine[counter].ToString();
+            switch (posOne)
+            {
+                case "INTEGER":
+                    Console.WriteLine("checkFirstPosition case:INTEGER");
+                    raiseCounter();
+                    checkForOperator();
+                    break;
+                case "IDENTIFIER":
+                    Console.WriteLine("checkFirstPosition case:IDENTIFIER");
+                    raiseCounter();
+                    checkForOperator();
+                    break;
+                case "LPAREN":
+                    Console.WriteLine("checkFirstPosition case:LPAREN");
+                    openParanthesis++;
+                    parenthesisClosed = false;
+                    Console.WriteLine("Klammer AUF");
+                    raiseCounter();
+                    checkForIntOrVar();
+                    break;
+                case "WHITESPACE":
+                    validWhiteSpace();
+                    break;
+                default:
+                    lineOK = false;
+                    evaluateLine();
+                    break;
+            }
+
+
+        }
+
+        void validWhiteSpace()
+        {
+            String toCheck = LineToCheck[counter].ToString();
+            Console.WriteLine("LINEOK = " + lineOK);
+            if(counter == (LineToCheck.Capacity - 1))
+            {
+                evaluateLine();
+            }
+            else
+            {
+                lineOK = false;
+                evaluateLine();
+            }
+
+        }
+
+
+        void checkForIntOrVar()
+        {
+            String toCheck = LineToCheck[counter].ToString();
+            Console.WriteLine("CHECKFORINTORVAR " + toCheck);
+            switch (toCheck)
+            {
+                case "INTEGER" :
+                    Console.WriteLine("checkforINTorVAR case:INTEGER");
+                    if (raiseCounter() == true) { 
+                    checkForRParent();
+                   // checkForOperator();
+                    }
+                    else
+                    {
+                        evaluateLine();
+                    }
+                    break;
+                case "IDENTIFIER":
+                    Console.WriteLine("checkforINTorVAR case:IDENTIFIER");
+                    if (raiseCounter() == true)
+                    {
+                        checkForRParent();
+                        //checkForOperator();
+                    }
+                    else
+                    {
+                        evaluateLine();
+                    }
+                    break;
+                case "WHITESPACE":
+                    validWhiteSpace();
+                    break;
+                default:
+                    lineOK = false;
+                    evaluateLine();
+                    break;
+            }
+        }
+
+
+        void evaluateLine()
+        {
+            
+            if(lineOK == true && openParanthesis==0)
+            {
+                   Console.WriteLine("The Line is valid");
+                   resetGrammarChecker();
+            }
+            else
+            {
+                Console.WriteLine("The Line is not valid ");
+                resetGrammarChecker();
+            }
+
+        }
+
+        bool raiseCounter()
+        {
+            if (counter < (LineToCheck.Capacity-1)) 
+            {
+                counter++;
+                CounterIsRaised = true;
+            }
+            else
+            {
+                CounterIsRaised = false;
+
+            }
+            return CounterIsRaised;
+        }
+
+        void checkForOperator()
+        {
+            String toCheck = LineToCheck[counter].ToString();
+            switch (toCheck)
+            {
+                case "OPERATOR":
+                    Console.WriteLine("checkForOperator case:OPERATOR");
+                    raiseCounter();
+                    checkForLParent();
+                    //checkForIntOrVar();
+                    break;
+                default:
+                    lineOK = false;
+                    evaluateLine();
+                    break;
+            }
+
+        }
+
+        void checkForLParent()
+        {
+            String toCheck = LineToCheck[counter].ToString();
+            if (toCheck == "LPAREN")
+            {
+                openParanthesis++;
+                raiseCounter();
+                parenthesisClosed = false;
+                Console.WriteLine("Klammer AUF");
+            }
+            checkForIntOrVar();
+        }
+
+        void checkForRParent()
+        {
+            String toCheck = LineToCheck[counter].ToString();
+            if (toCheck == "RPAREN")
+            {
+
+                if (openParanthesis > 0)
+                {
+                    openParanthesis--;
+                    parenthesisClosed = true;
+                    if(raiseCounter()== true)
+                    {
+                        checkForOperator();
+                    }
+                    Console.WriteLine("Klammer ZU");
+                }
+                else
+                {
+                    lineOK = false;
+                    Console.WriteLine("Klammer PROBLÄM");
+                }
+            }
+        }
+        void resetGrammarChecker()
+        {
+            counter = 0;
+            openParanthesis = 0;
+            lineOK = true;
+            parenthesisClosed = true;
+        }
+
+    }
+
+
+
+}
+
+
+
 
