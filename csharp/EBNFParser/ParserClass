@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Collections;
 using ConsoleApplication2;
+using ConsoleApplication3;
 
 namespace ConsoleApplication2
 {
@@ -13,13 +14,14 @@ namespace ConsoleApplication2
     public class TokenParser
     {
 
-        private readonly Dictionary<Tokens, string> _tokens;
-        private readonly Dictionary<Tokens, MatchCollection> _regExMatchCollection;
-        private string _inputString;
-        private int _index;
+        private readonly Dictionary<Tokens, string> tokenDictionary;
+        private readonly Dictionary<Tokens, MatchCollection> regularExpressionsDictionary;
+        private string inputString;
+        private int index;
         public static TokenParser testP = new TokenParser();
         System.IO.StreamReader file =
-        new System.IO.StreamReader("c:\\Users\\Marco\\documents\\expressions.txt");
+        new System.IO.StreamReader("d:\\expressions.txt");
+        ArrayList Vincistkuhl = new ArrayList();
 
         public enum Tokens
         {
@@ -47,27 +49,26 @@ namespace ConsoleApplication2
 
         void checkLine(String line)
         {
-            ArrayList txtLine = new ArrayList();
             testP.InputString = line;
-            bool stop = false;
-            while (stop == false)
-            {   
-                Token t = testP.GetToken();
-                if (t != null)
-                {
-                    
+            GrammarCheck gCheck = new GrammarCheck();
+            ArrayList tokenInLine = new ArrayList();
+            ArrayList txtInLine = new ArrayList();
+            tokenInLine = testP.GetToken();
+            //Console.WriteLine("txtLine.Capacity" +txtLine.Capacity);
+            //foreach ( Token t in txtLine) { 
+            foreach( Token t in tokenInLine)
+            {
                     String tName = t.TokenName.ToString();
                     String tValue = t.TokenValue.ToString();
+                txtInLine.Add(t.TokenName.ToString());
                     Console.WriteLine("TokenName: " + tName + "   TokenValue: " + tValue);
-                    txtLine.Add(tName);
-                }
-                else
-                {
-                    stop = true;
-                    GrammarCheck grammarCheck = new GrammarCheck();
-                    grammarCheck.checkFirstPosition(txtLine);
-                }
             }
+            Console.WriteLine();
+            gCheck.checkFirstPosition(txtInLine);
+            tokenInLine.Clear();
+            tokenInLine.TrimToSize();
+            txtInLine.Clear();
+            txtInLine.TrimToSize();
         }
 
         void start()
@@ -90,6 +91,15 @@ namespace ConsoleApplication2
             testP.resetParser();
             testP.checkLine(testP.getLineFromTxt());
             testP.resetParser();
+            testP.checkLine(testP.getLineFromTxt());
+            testP.resetParser();
+            testP.checkLine(testP.getLineFromTxt());
+            testP.resetParser();
+            testP.checkLine(testP.getLineFromTxt());
+            testP.resetParser();
+
+
+
 
         }
 
@@ -123,85 +133,81 @@ namespace ConsoleApplication2
 
         void resetParser()
         {
-            _index = 0;
-            _inputString = String.Empty;
-            _regExMatchCollection.Clear();
+            index = 0;
+            inputString = String.Empty;
+            regularExpressionsDictionary.Clear();
         }
 
         public string InputString
         {
             set
             {
-                _inputString = value;
-                PrepareRegex();
+                inputString = value;
+                prepareRegularExpressions();
             }
         }
 
         public TokenParser()
         {
-            _tokens = new Dictionary<Tokens, string>();
-            _regExMatchCollection = new Dictionary<Tokens, MatchCollection>();
-            _index = 0;
-            _inputString = string.Empty;
+            tokenDictionary = new Dictionary<Tokens, string>();
+            regularExpressionsDictionary = new Dictionary<Tokens, MatchCollection>();
+            index = 0;
+            inputString = string.Empty;
 
-            _tokens.Add(Tokens.EQUALS, "=");
-            _tokens.Add(Tokens.IDENTIFIER, "[x-zX-Z_][x-zX-Z0-9_]*");
-            _tokens.Add(Tokens.FLOAT, "[0-9]?\\.+[0-9]+");
-            _tokens.Add(Tokens.INTEGER, "[0-9]+");
-            _tokens.Add(Tokens.APOSTROPHE, "'.*");
-            _tokens.Add(Tokens.LPAREN, "\\(");
-            _tokens.Add(Tokens.RPAREN, "\\)");
-            _tokens.Add(Tokens.OPERATOR, "[*+-/]");
-            _tokens.Add(Tokens.WHITESPACE, "[ \t]+");
-            //_tokens.Add(Tokens.ASTERISK, "\\*");
-            //_tokens.Add(Tokens.SLASH, "\\/");
-            //_tokens.Add(Tokens.PLUS, "\\+");
-            //_tokens.Add(Tokens.MINUS, "\\-");
+            tokenDictionary.Add(Tokens.EQUALS, "="); //UNSUSED
+            tokenDictionary.Add(Tokens.IDENTIFIER, "[x-zX-Z_][x-zX-Z0-9_]*");
+            tokenDictionary.Add(Tokens.FLOAT, "[0-9]?\\.+[0-9]+");//UNUSED
+            tokenDictionary.Add(Tokens.INTEGER, "[0-9]+");
+            tokenDictionary.Add(Tokens.APOSTROPHE, "'.*");
+            tokenDictionary.Add(Tokens.LPAREN, "\\(");
+            tokenDictionary.Add(Tokens.RPAREN, "\\)");
+            tokenDictionary.Add(Tokens.OPERATOR, "[*+-/]");
+            tokenDictionary.Add(Tokens.WHITESPACE, "[ \t]+");
         }
 
-        private void PrepareRegex()
+        private void prepareRegularExpressions()
         {
-            _regExMatchCollection.Clear();
-            foreach (KeyValuePair<Tokens, string> pair in _tokens)
+            regularExpressionsDictionary.Clear();
+            foreach (KeyValuePair<Tokens, string> pair in tokenDictionary)
             {
-                _regExMatchCollection.Add(pair.Key, Regex.Matches(_inputString, pair.Value));
+                regularExpressionsDictionary.Add(pair.Key, Regex.Matches(inputString, pair.Value));
             }
         }
 
 
 
-        public Token GetToken()
+            ArrayList tokenList = new ArrayList();
+        public ArrayList GetToken()
         {
-            if (_index >= _inputString.Length)
-                return null;
-
-            foreach (KeyValuePair<Tokens, MatchCollection> pair in _regExMatchCollection)
+            if (index < inputString.Length)
             {
-                foreach (Match match in pair.Value)
-                {
-                    if (match.Index == _index)
-                    {
-                        _index += match.Length;
-                        return new Token(pair.Key, match.Value);
-                    }
 
-                    if (match.Index > _index)
+                foreach (KeyValuePair<Tokens, MatchCollection> pair in regularExpressionsDictionary)
+                {
+                    foreach (Match match in pair.Value)
                     {
-                        break;
+                        if (match.Index == index)
+                        {
+                            index += match.Length;
+                            Token t = new Token(pair.Key, match.Value);
+                            tokenList.Add(t);
+                            String tName = t.TokenName.ToString();
+                            String tValue = t.TokenValue.ToString();
+                            GetToken();
+                        }
+
+                        if (match.Index > index)
+                        {
+                            break;
+                        }
                     }
                 }
+                index++;
+                //return new Token(Tokens.UNDEFINED, string.Empty);
             }
-            _index++;
-            return new Token(Tokens.UNDEFINED, string.Empty);
+            return tokenList;
         }
-
     }
 
 }
-
-
-
-
-
-
 
