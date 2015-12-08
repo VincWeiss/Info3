@@ -1,1 +1,22 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApplication2
+{
+    public class Token
+    {
+        public TokenParser.Tokens TokenName { get; set; }
+
+        public string TokenValue { get; set; }
+
+        public Token(TokenParser.Tokens name, string value)
+        {
+            TokenName = name;
+            TokenValue = value;
+        }
+    }
+}
 
