@@ -1,1 +1,228 @@
-//Test
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Text.RegularExpressions;
+using System.Collections;
+using ConsoleApplication2;
+
+namespace ConsoleApplication2
+{
+
+    //the tokenparser class exposes the following property:
+
+    //inputstring -- 
+    //after instantiating a copy of tokenparser, you must set this string property to the value of the string you want parsed.
+    //the tokenparser class exposes the following methods:
+
+    //gettoken() -- 
+    //call this method to retrieve the next token from the input string. the gettoken() method returns a token object. 
+    //a token object contains the tokenname (which is an enum of tokens that you defined in your rules earlier, like integer, whitespace, float) 
+    //and it contains the tokenvalue.the tokenvalue will be the value retrieved from the parser.for example, an integer might return "53" for example.
+
+    //peek() -- 
+    //this method will return the next token that gettoken() will return. it allows you to look ahead in the token buffer without actually 
+    //pulling anything off the queue.the return value of peek() is a peektoken.a peektoken is a special object that contains a token object and an index. 
+    //by calling peek() and passing a peektoken as an argument to peek(), peek() will return the token that is returned after the last peek() call.
+    //in this way, you can peek ahead several tokens deep.
+
+    //resetparser() -- 
+    //this method resets the parser. 
+    //after calling this, you must set the inputstring property to a string again and then you can call gettoken() or peektoken() as you normally would to parse a new string.
+
+    public class TokenParser
+    {
+
+        private readonly Dictionary<Tokens, string> _tokens;
+        private readonly Dictionary<Tokens, MatchCollection> _regExMatchCollection;
+        private string _inputString;
+        private int _index;
+        public static TokenParser testP = new TokenParser();
+        System.IO.StreamReader file =
+        new System.IO.StreamReader("c:\\Users\\Marco\\documents\\expressions.txt");
+
+        public enum Tokens
+        {
+            UNDEFINED = 0,
+            EQUALS = 1,
+            IDENTIFIER = 2,
+            FLOAT = 3,
+            INTEGER = 4,
+            APOSTROPHE = 5,
+            LPAREN = 6,
+            RPAREN = 7,
+            OPERATOR = 8,
+            WHITESPACE = 9
+            //ASTERISK = 8,
+            //SLASH = 9,
+            //PLUS = 10,
+            //MINUS = 11
+        }
+
+
+        static void Main(string[] args)
+        {
+            testP.start();
+        }
+
+        void checkLine(String line)
+        {
+            ArrayList txtLine = new ArrayList();
+            testP.InputString = line;
+            bool stop = false;
+            while (stop == false)
+            {   
+                Token t = testP.GetToken();
+                if (t != null)
+                {
+                    
+                    String tName = t.TokenName.ToString();
+                    String tValue = t.TokenValue.ToString();
+                    Console.WriteLine("TokenName: " + tName + "   TokenValue: " + tValue);
+                    txtLine.Add(tName);
+                }
+                else
+                {
+                    stop = true;
+                    GrammarCheck grammarCheck = new GrammarCheck();
+                    grammarCheck.checkFirstPosition(txtLine);
+                }
+            }
+        }
+
+        void start()
+        {
+            testP.checkLine(testP.getLineFromTxt());
+            testP.resetParser();
+            testP.checkLine(testP.getLineFromTxt());
+            testP.resetParser();
+            testP.checkLine(testP.getLineFromTxt());
+            testP.resetParser();
+            testP.checkLine(testP.getLineFromTxt());
+            testP.resetParser();
+            testP.checkLine(testP.getLineFromTxt());
+            testP.resetParser();
+            testP.checkLine(testP.getLineFromTxt());
+            testP.resetParser();
+            testP.checkLine(testP.getLineFromTxt());
+            testP.resetParser();
+            testP.checkLine(testP.getLineFromTxt());
+            testP.resetParser();
+            testP.checkLine(testP.getLineFromTxt());
+            testP.resetParser();
+
+        }
+
+        String getLineFromTxt()
+        {
+            string line = "";
+            // Read the file and display it line by line.
+            line = file.ReadLine();
+            //if (line != null)
+            //{
+            //}
+
+
+            return line;
+        }
+
+        void contains(String line, String search)
+        {
+            bool isInLine = line.Contains(search);
+            if (isInLine)
+            {
+                Console.WriteLine("The String: " + line + " contains: " + search);
+                int index = line.IndexOf(search);
+                if (index >= 0)
+                    Console.WriteLine("'{0} begins at character position {1}",
+                                      line, index + 1);
+            }
+            isInLine = false;
+        }
+
+
+        void resetParser()
+        {
+            _index = 0;
+            _inputString = String.Empty;
+            _regExMatchCollection.Clear();
+        }
+
+        public string InputString
+        {
+            set
+            {
+                _inputString = value;
+                PrepareRegex();
+            }
+        }
+
+        public TokenParser()
+        {
+            _tokens = new Dictionary<Tokens, string>();
+            _regExMatchCollection = new Dictionary<Tokens, MatchCollection>();
+            _index = 0;
+            _inputString = string.Empty;
+
+            _tokens.Add(Tokens.EQUALS, "=");
+            _tokens.Add(Tokens.IDENTIFIER, "[x-zX-Z_][x-zX-Z0-9_]*");
+            _tokens.Add(Tokens.FLOAT, "[0-9]?\\.+[0-9]+");
+            _tokens.Add(Tokens.INTEGER, "[0-9]+");
+            _tokens.Add(Tokens.APOSTROPHE, "'.*");
+            _tokens.Add(Tokens.LPAREN, "\\(");
+            _tokens.Add(Tokens.RPAREN, "\\)");
+            _tokens.Add(Tokens.OPERATOR, "[*+-/]");
+            _tokens.Add(Tokens.WHITESPACE, "[ \t]+");
+            //_tokens.Add(Tokens.ASTERISK, "\\*");
+            //_tokens.Add(Tokens.SLASH, "\\/");
+            //_tokens.Add(Tokens.PLUS, "\\+");
+            //_tokens.Add(Tokens.MINUS, "\\-");
+        }
+
+        private void PrepareRegex()
+        {
+            _regExMatchCollection.Clear();
+            foreach (KeyValuePair<Tokens, string> pair in _tokens)
+            {
+                _regExMatchCollection.Add(pair.Key, Regex.Matches(_inputString, pair.Value));
+            }
+        }
+
+
+
+        public Token GetToken()
+        {
+            if (_index >= _inputString.Length)
+                return null;
+
+            foreach (KeyValuePair<Tokens, MatchCollection> pair in _regExMatchCollection)
+            {
+                foreach (Match match in pair.Value)
+                {
+                    if (match.Index == _index)
+                    {
+                        _index += match.Length;
+                        return new Token(pair.Key, match.Value);
+                    }
+
+                    if (match.Index > _index)
+                    {
+                        break;
+                    }
+                }
+            }
+            _index++;
+            return new Token(Tokens.UNDEFINED, string.Empty);
+        }
+
+    }
+
+}
+
+
+
+
+
+
+
