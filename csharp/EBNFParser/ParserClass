@@ -10,27 +10,6 @@ using ConsoleApplication2;
 namespace ConsoleApplication2
 {
 
-    //the tokenparser class exposes the following property:
-
-    //inputstring -- 
-    //after instantiating a copy of tokenparser, you must set this string property to the value of the string you want parsed.
-    //the tokenparser class exposes the following methods:
-
-    //gettoken() -- 
-    //call this method to retrieve the next token from the input string. the gettoken() method returns a token object. 
-    //a token object contains the tokenname (which is an enum of tokens that you defined in your rules earlier, like integer, whitespace, float) 
-    //and it contains the tokenvalue.the tokenvalue will be the value retrieved from the parser.for example, an integer might return "53" for example.
-
-    //peek() -- 
-    //this method will return the next token that gettoken() will return. it allows you to look ahead in the token buffer without actually 
-    //pulling anything off the queue.the return value of peek() is a peektoken.a peektoken is a special object that contains a token object and an index. 
-    //by calling peek() and passing a peektoken as an argument to peek(), peek() will return the token that is returned after the last peek() call.
-    //in this way, you can peek ahead several tokens deep.
-
-    //resetparser() -- 
-    //this method resets the parser. 
-    //after calling this, you must set the inputstring property to a string again and then you can call gettoken() or peektoken() as you normally would to parse a new string.
-
     public class TokenParser
     {
 
