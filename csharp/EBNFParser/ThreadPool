@@ -1,86 +1,68 @@
 using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
+using System.Threading.Tasks;
+using EbnfParser;
 
-namespace ThreadPoolClass
+namespace EbnfParser
 {
     class TPool
     {
-        private int _threadAm;
-        private string _line;
-        object[] threads;
-        ManualResetEvent[] doneEvents;
-        ManualResetEvent _doneEvent;
-        private EBNFParser parser;
+        EBNFParser p1 = new EBNFParser();
         private System.IO.StreamReader file =
-        new System.IO.StreamReader("D:\\Uni\\Informatik\\Inf III\\C#\\expressions.txt");
+        new System.IO.StreamReader("D:\\expressions.txt");
+        int amountOfLines = 20;
+        public int QueueLength;
+        private Object thisLock = new Object();
 
-        public TPool(int threadAm, ManualResetEvent doneEvent)
+        public TPool()
         {
-            _threadAm = threadAm;
-            _doneEvent = doneEvent;
-            threads = new TPool[threadAm];
-            ThreadPool.SetMaxThreads(threadAm, 0); // asynchrone Threads 0 oder 3?????
-            ThreadPool.SetMinThreads(threadAm, 0);
+            QueueLength = 0;
         }
 
-        public void AllocateLineToThread()
+        public void addTaskToQueue(int id)
         {
-            _line = ReadTxt();
-            Console.WriteLine("first line " + _line);
-            doneEvents = new ManualResetEvent[_threadAm];
-            TPool t = null;
-            
-            foreach(ManualResetEvent de in doneEvents)
-            {
-                _doneEvent = new ManualResetEvent(false);
-                t = new TPool(_threadAm, _doneEvent);
-                ThreadPool.QueueUserWorkItem(t.ThreadProcedure, ReadTxt());
-                Thread.Sleep(1000);
-                Console.WriteLine("ThreadAmount : " + _threadAm);
-            }
-            int x = 0;
-            while(x < 20)
-            {
-                x++;
-            }
-            
-
+            ThreadPool.QueueUserWorkItem(
+            new WaitCallback(parsLine), id);
+            QueueLength++;
         }
-
-        public void ThreadProcedure(Object stateInfo)
-        {
-            Console.WriteLine("threadprocedure method ");
-            parser = new EBNFParser();
-            Console.WriteLine("threadprocedure method ");
-            string line = (string)stateInfo;
-            Console.WriteLine("the new line string   "+ line);
-            parser.parse(line);
-            _doneEvent.Set();
-        }
-
         private string ReadTxt()
         {
             string line = "";
             line = file.ReadLine();
-
+           
             return line;
         }
-
-        private static void ShowThreadInformation(int taskName)
+        public void parsLine(Object obj)
         {
-            String msg = null;
-            Thread thread = Thread.CurrentThread;
-
+            lock (thisLock)
             {
-                msg = String.Format("{0} thread information\n", taskName) +
-                      String.Format("   Background: {0}\n", thread.IsBackground) +
-                      String.Format("   Thread Pool: {0}\n", thread.IsThreadPoolThread) +
-                      String.Format("   Thread ID: {0}\n", thread.ManagedThreadId);
+                String input = ReadTxt();
+                Console.WriteLine(input);
+                if (input != null || input != "")
+                {
+                    p1.parse(input);
+                }
+                Thread.Sleep(100);
+                QueueLength--;
             }
-            Console.WriteLine(msg);
+        }
+        public static void Main(String[] args)
+        {
+            TPool tPoolObj = new TPool();
+            int id = 1;
+            for (int x = 0; x < tPoolObj.amountOfLines; x++)
+            { 
+           
+                tPoolObj.addTaskToQueue(id);
+                id++;
+            }
+            while (tPoolObj.QueueLength != 0)
+            {
+                Thread.Sleep(1000);
+            }
         }
     }
 }
