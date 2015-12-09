@@ -5,21 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Collections;
-using ConsoleApplication2;
+using EbnfParser;
 
-namespace ConsoleApplication2
+namespace EbnfParsers
 {
 
-    public class TokenParser
+    public class EBNFParser
     {
 
         private readonly Dictionary<Tokens, string> tokenDictionary;
         private readonly Dictionary<Tokens, MatchCollection> regularExpressionsDictionary;
         private string inputString;
         private int index;
-        public static TokenParser testP = new TokenParser();
+        public static EBNFParser testP = new EBNFParser();
         System.IO.StreamReader file =
-        new System.IO.StreamReader("c:\\Users\\Marco\\documents\\expressions.txt");
+        new System.IO.StreamReader("d:\\expressions.txt");
 
         public enum Tokens
         {
@@ -31,13 +31,7 @@ namespace ConsoleApplication2
             WHITESPACE = 6
         }
 
-
-        static void Main(string[] args)
-        {
-            testP.start();
-        }
-
-        public TokenParser()
+        public EBNFParser()
         {
             tokenDictionary = new Dictionary<Tokens, string>();
             regularExpressionsDictionary = new Dictionary<Tokens, MatchCollection>();
@@ -51,6 +45,19 @@ namespace ConsoleApplication2
             tokenDictionary.Add(Tokens.OPERATOR, "[*+-/]");
             tokenDictionary.Add(Tokens.WHITESPACE, "[ \t]+");
         }
+
+        static void Main(string[] args)
+        {
+            testP.parse(testP.getLineFromTxt());
+        }
+
+
+        void parse(String StringToParse)
+        {
+            testP.checkLine(StringToParse);
+            testP.resetParser();
+        }
+
         void checkLine(String line)
         {
             testP.InputString = line;
@@ -58,12 +65,13 @@ namespace ConsoleApplication2
             ArrayList tokenInLine = new ArrayList();
             ArrayList txtInLine = new ArrayList();
             tokenInLine = testP.GetToken();
+            Console.WriteLine(line);
             foreach (Token t in tokenInLine)
             {
                 String tName = t.TokenName.ToString();
                 String tValue = t.TokenValue.ToString();
                 txtInLine.Add(t.TokenName.ToString());
-                Console.WriteLine("TokenName: " + tName + "   TokenValue: " + tValue);
+                Console.WriteLine("TokenName: " + tName + "   TokenValue: " + tValue + "   ");
             }
             gCheck.checkFirstPosition(txtInLine);
             tokenInLine.Clear();
@@ -72,42 +80,10 @@ namespace ConsoleApplication2
             txtInLine.TrimToSize();
         }
 
-        void start()
-        {
-            testP.checkLine(testP.getLineFromTxt());
-            testP.resetParser();
-            testP.checkLine(testP.getLineFromTxt());
-            testP.resetParser();
-            testP.checkLine(testP.getLineFromTxt());
-            testP.resetParser();
-            testP.checkLine(testP.getLineFromTxt());
-            testP.resetParser();
-            testP.checkLine(testP.getLineFromTxt());
-            testP.resetParser();
-            testP.checkLine(testP.getLineFromTxt());
-            testP.resetParser();
-            testP.checkLine(testP.getLineFromTxt());
-            testP.resetParser();
-            testP.checkLine(testP.getLineFromTxt());
-            testP.resetParser();
-            testP.checkLine(testP.getLineFromTxt());
-            testP.resetParser();
-            testP.checkLine(testP.getLineFromTxt());
-            testP.resetParser();
-            testP.checkLine(testP.getLineFromTxt());
-            testP.resetParser();
-            testP.checkLine(testP.getLineFromTxt());
-            testP.resetParser();
-
-
-
-
-        }
 
         String getLineFromTxt()
         {
             string line = "";
-            // Read the file and display it line by line.
             line = file.ReadLine();
             return line;
         }
@@ -171,6 +147,20 @@ namespace ConsoleApplication2
             }
             return tokenList;
         }
-    }
+
+
+        void setInputString(String Input)
+        {
+            if (Input != null && Input != "")
+            {
+                testP.InputString = Input;
+            }
+            else
+            {
+                throw new NullReferenceException();
+            }
+        }
+
+    }//END OF CLASS
 
 }
