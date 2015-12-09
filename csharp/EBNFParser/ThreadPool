@@ -1,0 +1,86 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+
+namespace ThreadPoolClass
+{
+    class TPool
+    {
+        private int _threadAm;
+        private string _line;
+        object[] threads;
+        ManualResetEvent[] doneEvents;
+        ManualResetEvent _doneEvent;
+        private EBNFParser parser;
+        private System.IO.StreamReader file =
+        new System.IO.StreamReader("D:\\Uni\\Informatik\\Inf III\\C#\\expressions.txt");
+
+        public TPool(int threadAm, ManualResetEvent doneEvent)
+        {
+            _threadAm = threadAm;
+            _doneEvent = doneEvent;
+            threads = new TPool[threadAm];
+            ThreadPool.SetMaxThreads(threadAm, 0); // asynchrone Threads 0 oder 3?????
+            ThreadPool.SetMinThreads(threadAm, 0);
+        }
+
+        public void AllocateLineToThread()
+        {
+            _line = ReadTxt();
+            Console.WriteLine("first line " + _line);
+            doneEvents = new ManualResetEvent[_threadAm];
+            TPool t = null;
+            
+            foreach(ManualResetEvent de in doneEvents)
+            {
+                _doneEvent = new ManualResetEvent(false);
+                t = new TPool(_threadAm, _doneEvent);
+                ThreadPool.QueueUserWorkItem(t.ThreadProcedure, ReadTxt());
+                Thread.Sleep(1000);
+                Console.WriteLine("ThreadAmount : " + _threadAm);
+            }
+            int x = 0;
+            while(x < 20)
+            {
+                x++;
+            }
+            
+
+        }
+
+        public void ThreadProcedure(Object stateInfo)
+        {
+            Console.WriteLine("threadprocedure method ");
+            parser = new EBNFParser();
+            Console.WriteLine("threadprocedure method ");
+            string line = (string)stateInfo;
+            Console.WriteLine("the new line string   "+ line);
+            parser.parse(line);
+            _doneEvent.Set();
+        }
+
+        private string ReadTxt()
+        {
+            string line = "";
+            line = file.ReadLine();
+
+            return line;
+        }
+
+        private static void ShowThreadInformation(int taskName)
+        {
+            String msg = null;
+            Thread thread = Thread.CurrentThread;
+
+            {
+                msg = String.Format("{0} thread information\n", taskName) +
+                      String.Format("   Background: {0}\n", thread.IsBackground) +
+                      String.Format("   Thread Pool: {0}\n", thread.IsThreadPoolThread) +
+                      String.Format("   Thread ID: {0}\n", thread.ManagedThreadId);
+            }
+            Console.WriteLine(msg);
+        }
+    }
+}
