@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using EbnfParser;
 
-namespace EbnfParsers
+namespace EbnfParser
 {
 
     public class EBNFParser
@@ -28,7 +28,8 @@ namespace EbnfParsers
             LPAREN = 3,
             RPAREN = 4,
             OPERATOR = 5,
-            WHITESPACE = 6
+            WHITESPACE = 6,
+            LETTERS = 7
         }
 
         public EBNFParser()
@@ -44,15 +45,10 @@ namespace EbnfParsers
             tokenDictionary.Add(Tokens.RPAREN, "\\)");
             tokenDictionary.Add(Tokens.OPERATOR, "[*+-/]");
             tokenDictionary.Add(Tokens.WHITESPACE, "[ \t]+");
+            tokenDictionary.Add(Tokens.LETTERS, "[a-wA-W]+");
         }
 
-        static void Main(string[] args)
-        {
-            testP.parse(testP.getLineFromTxt());
-        }
-
-
-        void parse(String StringToParse)
+        public void parse(String StringToParse)
         {
             testP.checkLine(StringToParse);
             testP.resetParser();
