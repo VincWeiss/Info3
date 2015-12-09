@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ConsoleApplication2
+namespace EbnfParser
 {
+
+
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -22,7 +19,7 @@ namespace ConsoleApplication2
         bool lineOK = true;
         bool parenthesisClosed = true;
         bool moreLParents = false;
-        bool moreRParents =false;
+        bool moreRParents = false;
 
         public void checkFirstPosition(ArrayList inLine)
         {
@@ -32,23 +29,22 @@ namespace ConsoleApplication2
             switch (posOne)
             {
                 case "INTEGER":
-                    Console.WriteLine("checkFirstPosition case:INTEGER");
+                    Console.Write(" INTEGER ");
                     raiseCounter();
                     checkForOperator();
                     break;
                 case "IDENTIFIER":
-                    Console.WriteLine("checkFirstPosition case:IDENTIFIER");
+                    Console.Write(" IDENTIFIER ");
                     raiseCounter();
                     checkForOperator();
                     break;
                 case "LPAREN":
-                    Console.WriteLine("checkFirstPosition case:LPAREN");
+                    Console.Write(" LPAREN ");
                     parenthesisClosed = false;
                     checkForLParent();
-                    Console.WriteLine("Klammer AUF");
                     raiseCounter();
                     break;
-                case "WHITESPACE":
+                case " WHITESPACE ":
                     validWhiteSpace();
                     break;
                 default:
@@ -63,8 +59,7 @@ namespace ConsoleApplication2
         void validWhiteSpace()
         {
             String toCheck = LineToCheck[counter].ToString();
-            Console.WriteLine("LINEOK = " + lineOK);
-            if(counter == (LineToCheck.Capacity - 1))
+            if (counter == (LineToCheck.Capacity - 1))
             {
                 evaluateLine();
             }
@@ -82,11 +77,11 @@ namespace ConsoleApplication2
             String toCheck = LineToCheck[counter].ToString();
             switch (toCheck)
             {
-                case "INTEGER" :
-                    Console.WriteLine("checkforINTorVAR case:INTEGER");
-                    if (raiseCounter() == true) { 
-                    checkForRParent();
-                   // checkForOperator();
+                case "INTEGER":
+                    Console.Write(" INTEGER ");
+                    if (raiseCounter() == true)
+                    {
+                        checkForRParent();
                     }
                     else
                     {
@@ -94,11 +89,10 @@ namespace ConsoleApplication2
                     }
                     break;
                 case "IDENTIFIER":
-                    Console.WriteLine("checkforINTorVAR case:IDENTIFIER");
+                    Console.Write(" IDENTIFIER ");
                     if (raiseCounter() == true)
                     {
                         checkForRParent();
-                        //checkForOperator();
                     }
                     else
                     {
@@ -106,6 +100,7 @@ namespace ConsoleApplication2
                     }
                     break;
                 case "RPAREN":
+                    Console.Write(" RPAREN ");
                     checkForRParent();
                     break;
                 case "WHITESPACE":
@@ -121,15 +116,16 @@ namespace ConsoleApplication2
 
         void evaluateLine()
         {
-            
-            if(lineOK == true && openParanthesis==0)
+
+            if (lineOK == true && openParanthesis == 0)
             {
-                   Console.WriteLine("The Line is valid");
-                   resetGrammarChecker();
+                Console.WriteLine();
+                Console.WriteLine("---The Line is valid---");
+                resetGrammarChecker();
             }
             else
             {
-                Console.WriteLine("The Line is not valid ");
+                Console.WriteLine("---The Line is NOT valid---");
                 resetGrammarChecker();
             }
 
@@ -137,7 +133,7 @@ namespace ConsoleApplication2
 
         bool raiseCounter()
         {
-            if (counter < (LineToCheck.Capacity-1)) 
+            if (counter < (LineToCheck.Capacity - 1))
             {
                 counter++;
                 CounterIsRaised = true;
@@ -156,10 +152,9 @@ namespace ConsoleApplication2
             switch (toCheck)
             {
                 case "OPERATOR":
-                    Console.WriteLine("checkForOperator case:OPERATOR");
+                    Console.Write(" OPERATOR ");
                     raiseCounter();
                     checkForLParent();
-                    //checkForIntOrVar();
                     break;
                 default:
                     lineOK = false;
@@ -174,15 +169,13 @@ namespace ConsoleApplication2
             String toCheck = LineToCheck[counter].ToString();
             if (toCheck == "LPAREN")
             {
-                Console.WriteLine("OPENPARANTHESIS " + openParanthesis);
                 moreLParents = true;
                 openParanthesis++;
                 raiseCounter();
                 parenthesisClosed = false;
-                Console.WriteLine("Klammer AUF");
             }
 
-            if (CounterIsRaised == true && moreLParents==false)
+            if (CounterIsRaised == true && moreLParents == false)
             {
                 lineOK = true;
                 checkForIntOrVar();
@@ -203,13 +196,11 @@ namespace ConsoleApplication2
 
                 if (openParanthesis > 0)
                 {
-                    Console.WriteLine("OPENPARANTHESIS " + openParanthesis);
                     moreRParents = true;
                     openParanthesis--;
 
                     parenthesisClosed = true;
                     raiseCounter();
-                    Console.WriteLine("Klammer ZU");
                 }
                 else
                 {
@@ -217,12 +208,12 @@ namespace ConsoleApplication2
                     evaluateLine();
                 }
             }
-            if (CounterIsRaised == true && moreRParents==false)
+            if (CounterIsRaised == true && moreRParents == false)
             {
                 lineOK = true;
                 checkForOperator();
             }
-            else if(CounterIsRaised==true && moreRParents==true)
+            else if (CounterIsRaised == true && moreRParents == true)
             {
                 lineOK = false;
                 moreRParents = false;
@@ -246,6 +237,3 @@ namespace ConsoleApplication2
 
 
 }
-
-
-
