@@ -1,8 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace EbnfParser
+namespace EBNFParsers
 {
-
-
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -17,9 +20,8 @@ namespace EbnfParser
         int openParanthesis = 0;
         bool CounterIsRaised;
         bool lineOK = true;
-        bool parenthesisClosed = true;
         bool moreLParents = false;
-        bool moreRParents = false;
+        bool moreRParents =false;
 
         public void checkFirstPosition(ArrayList inLine)
         {
@@ -29,23 +31,29 @@ namespace EbnfParser
             switch (posOne)
             {
                 case "INTEGER":
-                    Console.Write(" INTEGER ");
+                    Console.Write("    INTEGER    ");
                     raiseCounter();
                     checkForOperator();
                     break;
                 case "IDENTIFIER":
-                    Console.Write(" IDENTIFIER ");
+                    Console.Write("  IDENTIFIER   ");
                     raiseCounter();
                     checkForOperator();
                     break;
                 case "LPAREN":
-                    Console.Write(" LPAREN ");
-                    parenthesisClosed = false;
                     checkForLParent();
                     raiseCounter();
                     break;
-                case " WHITESPACE ":
-                    validWhiteSpace();
+                case "WHITESPACE":
+                    Console.Write("   WHITESPACE   ");
+                    if (raiseCounter() == true)
+                    {
+                    checkForIntOrVar();
+                    }
+                    else
+                    {
+                        evaluateLine();
+                    }
                     break;
                 default:
                     lineOK = false;
@@ -59,7 +67,8 @@ namespace EbnfParser
         void validWhiteSpace()
         {
             String toCheck = LineToCheck[counter].ToString();
-            if (counter == (LineToCheck.Capacity - 1))
+            Console.WriteLine("LINEOK = " + lineOK);
+            if(counter == (LineToCheck.Capacity - 1))
             {
                 evaluateLine();
             }
@@ -77,11 +86,10 @@ namespace EbnfParser
             String toCheck = LineToCheck[counter].ToString();
             switch (toCheck)
             {
-                case "INTEGER":
-                    Console.Write(" INTEGER ");
-                    if (raiseCounter() == true)
-                    {
-                        checkForRParent();
+                case "INTEGER" :
+                    Console.Write("   INTEGER    ");
+                    if (raiseCounter() == true) {
+                    checkForRParent();
                     }
                     else
                     {
@@ -89,7 +97,7 @@ namespace EbnfParser
                     }
                     break;
                 case "IDENTIFIER":
-                    Console.Write(" IDENTIFIER ");
+                    Console.Write("    IDENTIFIER   ");
                     if (raiseCounter() == true)
                     {
                         checkForRParent();
@@ -100,11 +108,18 @@ namespace EbnfParser
                     }
                     break;
                 case "RPAREN":
-                    Console.Write(" RPAREN ");
                     checkForRParent();
                     break;
                 case "WHITESPACE":
-                    validWhiteSpace();
+                    Console.Write("   WHITESPACE   ");
+                    if (raiseCounter() == true)
+                    {
+                    checkForIntOrVar();
+                    }
+                    else
+                    {
+                        evaluateLine();
+                    }
                     break;
                 default:
                     lineOK = false;
@@ -116,24 +131,21 @@ namespace EbnfParser
 
         void evaluateLine()
         {
-
-            if (lineOK == true && openParanthesis == 0)
+            Console.WriteLine("");
+            if(lineOK == true && openParanthesis==0)
             {
-                Console.WriteLine();
-                Console.WriteLine("---The Line is valid---");
-                resetGrammarChecker();
+                   Console.WriteLine("The Line is valid");
             }
             else
             {
-                Console.WriteLine("---The Line is NOT valid---");
-                resetGrammarChecker();
+                Console.WriteLine("The Line is not valid ");
             }
 
         }
 
         bool raiseCounter()
         {
-            if (counter < (LineToCheck.Capacity - 1))
+            if (counter < (LineToCheck.Capacity-1)) 
             {
                 counter++;
                 CounterIsRaised = true;
@@ -152,9 +164,26 @@ namespace EbnfParser
             switch (toCheck)
             {
                 case "OPERATOR":
-                    Console.Write(" OPERATOR ");
-                    raiseCounter();
+                    Console.Write("   OPERATOR   ");
+                    if(raiseCounter()== true)
+                    {
                     checkForLParent();
+                    }
+                    else
+                    {
+                        evaluateLine();
+                    }
+                    break;
+                case "WHITESPACE":
+                    Console.Write("   WHITESPACE   ");
+                    if (raiseCounter()== true)
+                    {
+                    checkForOperator();
+                    }
+                    else
+                    {
+                        evaluateLine();
+                    }
                     break;
                 default:
                     lineOK = false;
@@ -169,13 +198,14 @@ namespace EbnfParser
             String toCheck = LineToCheck[counter].ToString();
             if (toCheck == "LPAREN")
             {
+                Console.Write("   LPAREN   ");
+               // Console.WriteLine("HODENSACK");
                 moreLParents = true;
                 openParanthesis++;
                 raiseCounter();
-                parenthesisClosed = false;
             }
 
-            if (CounterIsRaised == true && moreLParents == false)
+            if (CounterIsRaised == true && moreLParents==false)
             {
                 lineOK = true;
                 checkForIntOrVar();
@@ -193,13 +223,13 @@ namespace EbnfParser
             String toCheck = LineToCheck[counter].ToString();
             if (toCheck == "RPAREN")
             {
+                Console.Write("   RPAREN   ");
 
                 if (openParanthesis > 0)
                 {
                     moreRParents = true;
                     openParanthesis--;
 
-                    parenthesisClosed = true;
                     raiseCounter();
                 }
                 else
@@ -208,14 +238,15 @@ namespace EbnfParser
                     evaluateLine();
                 }
             }
-            if (CounterIsRaised == true && moreRParents == false)
+            //Console.WriteLine("COUNTERISRAISED = " + CounterIsRaised);
+            //Console.WriteLine("moreRParents = " + moreRParents);
+            if (CounterIsRaised == true && moreRParents==false)
             {
                 lineOK = true;
                 checkForOperator();
             }
-            else if (CounterIsRaised == true && moreRParents == true)
+            else if(CounterIsRaised==true && moreRParents==true)
             {
-                lineOK = false;
                 moreRParents = false;
                 checkForRParent();
             }
@@ -224,16 +255,12 @@ namespace EbnfParser
                 evaluateLine();
             }
         }
-        void resetGrammarChecker()
-        {
-            counter = 0;
-            openParanthesis = 0;
-            lineOK = true;
-            parenthesisClosed = true;
-        }
 
     }
 
 
 
 }
+
+
+
