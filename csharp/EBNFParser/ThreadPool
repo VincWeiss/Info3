@@ -22,50 +22,48 @@ namespace EbnfParser
             QueueLength = 0;
         }
 
-        public void addTaskToQueue(int id)
+        public void addTaskToQueue(TPool poolObj)
         {
+            String l = ReadTxt();
+            Console.WriteLine("Z28" + l);
             ThreadPool.QueueUserWorkItem(
-            new WaitCallback(parsLine), id);
+            o => poolObj.parsLine(l));
             QueueLength++;
         }
         private string ReadTxt()
         {
             string line = "";
+            if(file.ReadLine() == null)
+            {
+                QueueLength = 0;
+                taskNotCompleted = false;
+            }
+            else
+            {
             line = file.ReadLine();
+            }
 
             return line;
         }
-        public void parsLine(Object obj)
+        public void parsLine(String line)
         {
-            lock (thisLock)
-            {
-                String input = ReadTxt();
-                if (input == null || input == "")
-                {
-                    QueueLength = 0;
-                    taskNotCompleted = false;
-                }
-                else
-                {
-                EBNFParser parser = new EBNFParser();
-                    Console.WriteLine(input);
+            Console.WriteLine("Parser=" +line);
+            EBNFParser parser = new EBNFParser();
 
-                    parser.parse(input);
+                    parser.parse(line);
                     Thread.Sleep(100);
                     QueueLength--;
-                }
-            }
+               
         }
+
         public static void Main(String[] args)
         {
             TPool tPoolObj = new TPool();
-            int id = 1;
             ThreadPool.SetMaxThreads(3,3);
             while(tPoolObj.taskNotCompleted == true)
             {
 
-                tPoolObj.addTaskToQueue(id);
-                id++;
+                tPoolObj.addTaskToQueue(tPoolObj);
             }
             while (tPoolObj.QueueLength != 0)
             {
