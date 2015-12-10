@@ -1,153 +1,228 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.RegularExpressions;
 using System.Collections;
-using EbnfParser;
 
-namespace EbnfParser
+public class EBNFParser
 {
+    bool lineOK = true;
+    bool parenthesisClosed = true;
 
-    public class EBNFParser
+    void parse(String lineToParse)
+    {
+        EBNFParser p = new EBNFParser();
+        ArrayList Line = new ArrayList();
+        
+        p.checkFirstPosition(Line);
+    }
+
+    public void checkFirstPosition(ArrayList Line)
     {
 
-        private readonly Dictionary<Tokens, string> tokenDictionary;
-        private readonly Dictionary<Tokens, MatchCollection> regularExpressionsDictionary;
-        private string inputString;
-        private int index;
-        static EBNFParser testP = new EBNFParser();
-        ArrayList tokenList = new ArrayList();
-        
 
-        public enum Tokens
+        String toCheck = getNextPos(Line);
+        switch (toCheck)
         {
-            IDENTIFIER = 1,
-            INTEGER = 2,
-            LPAREN = 3,
-            RPAREN = 4,
-            OPERATOR = 5,
-            WHITESPACE = 6,
-            LETTERS = 7
-        }
-
-        public EBNFParser()
-        {
-            tokenDictionary = new Dictionary<Tokens, string>();
-            regularExpressionsDictionary = new Dictionary<Tokens, MatchCollection>();
-            index = 0;
-            inputString = string.Empty;
-
-            tokenDictionary.Add(Tokens.IDENTIFIER, "[x-zX-Z_][x-zX-Z0-9_]*");
-            tokenDictionary.Add(Tokens.INTEGER, "[0-9]+");
-            tokenDictionary.Add(Tokens.LPAREN, "\\(");
-            tokenDictionary.Add(Tokens.RPAREN, "\\)");
-            tokenDictionary.Add(Tokens.OPERATOR, "[*+-/]");
-            tokenDictionary.Add(Tokens.WHITESPACE, "[ \t]+");
-            tokenDictionary.Add(Tokens.LETTERS, "[a-wA-W]+");
-        }
-
-        public void parse(String StringToParse)
-        {
-            testP.checkLine(StringToParse);
-            testP.resetParser();
-        }
-
-        void checkLine(String line)
-        {
-            testP.InputString = line;
-            GrammarCheck gCheck = new GrammarCheck();
-            ArrayList tokenInLine = new ArrayList();
-            ArrayList txtInLine = new ArrayList();
-            tokenInLine = testP.GetToken();
-            Console.WriteLine(line);
-            foreach (Token t in tokenInLine)
-            {
-                String tName = t.TokenName.ToString();
-                String tValue = t.TokenValue.ToString();
-                txtInLine.Add(t.TokenName.ToString());
-                Console.WriteLine("TokenName: " + tName + "   TokenValue: " + tValue + "   ");
-            }
-            gCheck.checkFirstPosition(txtInLine);
-            tokenInLine.Clear();
-            tokenInLine.TrimToSize();
-            txtInLine.Clear();
-            txtInLine.TrimToSize();
+            case "0":
+            case "1":
+            case "2":
+            case "3":
+            case "4":
+            case "5":
+            case "6":
+            case "7":
+            case "8":
+            case "9":
+                checkForInt(Line);
+                break;
+            case "x":
+            case "y":
+            case "z":
+                checkForVar(Line);
+                break;
+            case "(":
+                checkForLParent(Line);
+                break;
+            default:
+                lineOK = false;
+                evaluateLine();
+                break;
         }
 
 
-        void resetParser()
+    }
+
+    String getNextPos(ArrayList Line)
+    {
+        String toCheck = "";
+        toCheck = Line[0].ToString();
+        return toCheck;
+    }
+
+    bool RemoveItemFromLine(ArrayList Line)
+    {
+        bool ItemisRemoved;
+        if (Line.Count > 1)
         {
-            index = 0;
-            inputString = String.Empty;
-            regularExpressionsDictionary.Clear();
+            ItemisRemoved = true;
+            Line.RemoveAt(0);
         }
-
-        public string InputString
+        else
         {
-            set
-            {
-                inputString = value;
-                prepareRegularExpressions();
-            }
+            ItemisRemoved = false;
         }
+        return ItemisRemoved;
+    }
 
-
-        private void prepareRegularExpressions()
+    void checkForInt(ArrayList Line)
+    {
+        String toCheck = getNextPos(Line);
+        switch (toCheck)
         {
-            regularExpressionsDictionary.Clear();
-            foreach (KeyValuePair<Tokens, string> pair in tokenDictionary)
-            {
-                regularExpressionsDictionary.Add(pair.Key, Regex.Matches(inputString, pair.Value));
-            }
-        }
-
-
-
-        public ArrayList GetToken()
-        {
-            if (index < inputString.Length)
-            {
-
-                foreach (KeyValuePair<Tokens, MatchCollection> pair in regularExpressionsDictionary)
+            case "0":
+            case "1":
+            case "2":
+            case "3":
+            case "4":
+            case "5":
+            case "6":
+            case "7":
+            case "8":
+            case "9":
+                Console.Write(" INTEGER ");
+                if (RemoveItemFromLine(Line) == true)
                 {
-                    foreach (Match match in pair.Value)
-                    {
-                        if (match.Index == index)
-                        {
-                            index += match.Length;
-                            Token t = new Token(pair.Key, match.Value);
-                            tokenList.Add(t);
-                            String tName = t.TokenName.ToString();
-                            String tValue = t.TokenValue.ToString();
-                            GetToken();
-                        }
-
-                        if (match.Index > index)
-                        {
-                            break;
-                        }
-                    }
+                    checkForInt(Line);
                 }
-                index++;
-            }
-            return tokenList;
+                else
+                {
+                    evaluateLine();
+                }
+                break;
+            case "+":
+            case "-":
+            case "*":
+            case "/":
+                checkForOperator(Line);
+                break;
+            case ")":
+                Console.Write(" RPAREN ");
+                if (RemoveItemFromLine(Line) == true)
+                {
+                    checkForRParent(Line);
+                }
+                else
+                {
+                    evaluateLine();
+                }
+                break;
+            default:
+                lineOK = false;
+                evaluateLine();
+                break;
         }
+    }
 
-
-        void setInputString(String Input)
+    void checkForOperator(ArrayList Line)
+    {
+        String toCheck = getNextPos(Line);
+        switch (toCheck)
         {
-            if (Input != null && Input != "")
-            {
-                testP.InputString = Input;
-            }
-            else
-            {
-                throw new NullReferenceException();
-            }
+            case "+":
+            case "-":
+            case "*":
+            case "/":
+                Console.Write(" OPERATOR ");
+                if (RemoveItemFromLine(Line) == true)
+                {
+                    checkForLParent(Line);
+                }
+                else
+                {
+                    evaluateLine();
+                }
+                break;
+            default:
+                lineOK = false;
+                evaluateLine();
+                break;
         }
 
-    }//END OF CLASS
+    }
 
+    void checkForVar(ArrayList Line)
+    {
+        String toCheck = getNextPos(Line);
+        switch (toCheck)
+        {
+
+            case "x":
+            case "y":
+            case "z":
+                Console.Write(" Variable ");
+                //getNextPos(Line);
+                if (RemoveItemFromLine(Line) == true)
+                {
+                    checkForOperator(Line);
+                }
+                else
+                {
+                    evaluateLine();
+                }
+                break;
+            default:
+                lineOK = false;
+                evaluateLine();
+                break;
+        }
+    }
+    void evaluateLine()
+    {
+
+        if (lineOK == true)
+        {
+            Console.WriteLine();
+            Console.WriteLine(" ---The Line is valid---");
+            resetGrammarChecker();
+        }
+        else
+        {
+            Console.WriteLine();
+            Console.WriteLine("---The Line is NOT valid---");
+            resetGrammarChecker();
+        }
+
+    }
+
+    void checkForLParent(ArrayList Line)
+    {
+        String toCheck = getNextPos(Line);
+        if (toCheck == "(")
+        {
+            Console.WriteLine("LPAREN");
+            parenthesisClosed = false;
+            RemoveItemFromLine(Line);
+            Line.TrimToSize();
+        }
+        checkForInt(Line);
+    }
+
+    void checkForRParent(ArrayList Line)
+    {
+        String toCheck = getNextPos(Line);
+        if (toCheck == ")")
+        {
+            if (parenthesisClosed == false)
+            {
+                parenthesisClosed = true;
+                RemoveItemFromLine(Line);
+                Line.TrimToSize();
+            }
+            checkForOperator(Line);
+        }
+    }
+
+    void resetGrammarChecker()
+    {
+        lineOK = true;
+        parenthesisClosed = true;
+    }
 }
