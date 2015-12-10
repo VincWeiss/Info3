@@ -10,15 +10,15 @@ namespace EbnfParser
 {
     class TPool
     {
-        EBNFParser p1 = new EBNFParser();
         private System.IO.StreamReader file =
         new System.IO.StreamReader("D:\\expressions.txt");
-        int amountOfLines = 20;
-        public int QueueLength;
-        private Object thisLock = new Object();
+        int QueueLength;
+        bool taskNotCompleted;
+        public Object thisLock = new Object();
 
         public TPool()
         {
+            taskNotCompleted = true;
             QueueLength = 0;
         }
 
@@ -32,7 +32,7 @@ namespace EbnfParser
         {
             string line = "";
             line = file.ReadLine();
-           
+
             return line;
         }
         public void parsLine(Object obj)
@@ -40,22 +40,30 @@ namespace EbnfParser
             lock (thisLock)
             {
                 String input = ReadTxt();
-                Console.WriteLine(input);
-                if (input != null || input != "")
+                if (input == null || input == "")
                 {
-                    p1.parse(input);
+                    QueueLength = 0;
+                    taskNotCompleted = false;
                 }
-                Thread.Sleep(100);
-                QueueLength--;
+                else
+                {
+                EBNFParser parser = new EBNFParser();
+                    Console.WriteLine(input);
+
+                    parser.parse(input);
+                    Thread.Sleep(100);
+                    QueueLength--;
+                }
             }
         }
         public static void Main(String[] args)
         {
             TPool tPoolObj = new TPool();
             int id = 1;
-            for (int x = 0; x < tPoolObj.amountOfLines; x++)
-            { 
-           
+            ThreadPool.SetMaxThreads(3,3);
+            while(tPoolObj.taskNotCompleted == true)
+            {
+
                 tPoolObj.addTaskToQueue(id);
                 id++;
             }
