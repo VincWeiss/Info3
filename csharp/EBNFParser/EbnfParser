@@ -3,21 +3,26 @@ using System.Collections;
 
 public class EBNFParser
 {
-    bool lineOK = true;
-    bool parenthesisClosed = true;
-
-    void parse(String lineToParse)
+    public void parse(ArrayList lineToParse, EBNFParser p)
     {
-        EBNFParser p = new EBNFParser();
-        ArrayList Line = new ArrayList();
-        
-        p.checkFirstPosition(Line);
+        String endline = "";
+        foreach (string tsl in lineToParse)
+        {
+            endline += tsl;
+        }
+        if (lineToParse.Capacity < 1)
+          {
+              //Console.WriteLine("StartCapacity was too small!!!");
+          }
+          else
+          {
+          p.checkFirstPosition(lineToParse);
+            //Console.WriteLine(endline);
+          }
     }
 
-    public void checkFirstPosition(ArrayList Line)
+    void checkFirstPosition(ArrayList Line)
     {
-
-
         String toCheck = getNextPos(Line);
         switch (toCheck)
         {
@@ -41,35 +46,9 @@ public class EBNFParser
             case "(":
                 checkForLParent(Line);
                 break;
-            default:
-                lineOK = false;
-                evaluateLine();
-                break;
         }
 
 
-    }
-
-    String getNextPos(ArrayList Line)
-    {
-        String toCheck = "";
-        toCheck = Line[0].ToString();
-        return toCheck;
-    }
-
-    bool RemoveItemFromLine(ArrayList Line)
-    {
-        bool ItemisRemoved;
-        if (Line.Count > 1)
-        {
-            ItemisRemoved = true;
-            Line.RemoveAt(0);
-        }
-        else
-        {
-            ItemisRemoved = false;
-        }
-        return ItemisRemoved;
     }
 
     void checkForInt(ArrayList Line)
@@ -87,15 +66,9 @@ public class EBNFParser
             case "7":
             case "8":
             case "9":
-                Console.Write(" INTEGER ");
-                if (RemoveItemFromLine(Line) == true)
-                {
-                    checkForInt(Line);
-                }
-                else
-                {
-                    evaluateLine();
-                }
+                ////Console.Write(" INT|" + toCheck + "| ");
+                Line = RemoveItemFromLine(Line);
+                checkForInt(Line);
                 break;
             case "+":
             case "-":
@@ -104,19 +77,11 @@ public class EBNFParser
                 checkForOperator(Line);
                 break;
             case ")":
-                Console.Write(" RPAREN ");
-                if (RemoveItemFromLine(Line) == true)
-                {
-                    checkForRParent(Line);
-                }
-                else
-                {
-                    evaluateLine();
-                }
+                ////Console.Write(" )|" + toCheck + "| ");
+                checkForRParent(Line);
                 break;
-            default:
-                lineOK = false;
-                evaluateLine();
+            case "End":
+                checkForEnd(Line);
                 break;
         }
     }
@@ -130,19 +95,12 @@ public class EBNFParser
             case "-":
             case "*":
             case "/":
-                Console.Write(" OPERATOR ");
-                if (RemoveItemFromLine(Line) == true)
-                {
-                    checkForLParent(Line);
-                }
-                else
-                {
-                    evaluateLine();
-                }
+                //Console.Write(" OP|" + toCheck + "| ");
+                Line = RemoveItemFromLine(Line);
+                checkForLParent(Line);
                 break;
-            default:
-                lineOK = false;
-                evaluateLine();
+            case "End":
+                checkForEnd(Line);
                 break;
         }
 
@@ -153,41 +111,31 @@ public class EBNFParser
         String toCheck = getNextPos(Line);
         switch (toCheck)
         {
-
             case "x":
             case "y":
             case "z":
-                Console.Write(" Variable ");
-                //getNextPos(Line);
-                if (RemoveItemFromLine(Line) == true)
-                {
-                    checkForOperator(Line);
-                }
-                else
-                {
-                    evaluateLine();
-                }
+                //Console.Write(" Var|" + toCheck + "| ");
+                Line = RemoveItemFromLine(Line);
+                checkForRParent(Line);
                 break;
-            default:
-                lineOK = false;
-                evaluateLine();
+            case "End":
+                checkForEnd(Line);
                 break;
         }
     }
-    void evaluateLine()
+        void evaluateLine(ArrayList Line)
     {
-
-        if (lineOK == true)
+        
+        if (Line.Capacity == 1)
         {
+            
             Console.WriteLine();
             Console.WriteLine(" ---The Line is valid---");
-            resetGrammarChecker();
         }
         else
         {
             Console.WriteLine();
             Console.WriteLine("---The Line is NOT valid---");
-            resetGrammarChecker();
         }
 
     }
@@ -197,12 +145,32 @@ public class EBNFParser
         String toCheck = getNextPos(Line);
         if (toCheck == "(")
         {
-            Console.WriteLine("LPAREN");
-            parenthesisClosed = false;
-            RemoveItemFromLine(Line);
+            //Console.WriteLine("(");
+            Line = RemoveItemFromLine(Line);
             Line.TrimToSize();
         }
-        checkForInt(Line);
+        switch (toCheck)
+        {
+            case "0":
+            case "1":
+            case "2":
+            case "3":
+            case "4":
+            case "5":
+            case "6":
+            case "7":
+            case "8":
+            case "9":
+                checkForInt(Line);
+                
+                break;
+            case "x":
+            case "y":
+            case "z":
+                checkForVar(Line);
+                break;
+            
+        }
     }
 
     void checkForRParent(ArrayList Line)
@@ -210,19 +178,44 @@ public class EBNFParser
         String toCheck = getNextPos(Line);
         if (toCheck == ")")
         {
-            if (parenthesisClosed == false)
-            {
-                parenthesisClosed = true;
-                RemoveItemFromLine(Line);
-                Line.TrimToSize();
-            }
+            Line = RemoveItemFromLine(Line);
+            Line.TrimToSize();
+        }    
             checkForOperator(Line);
-        }
     }
 
-    void resetGrammarChecker()
+    void checkForEnd(ArrayList Line)
     {
-        lineOK = true;
-        parenthesisClosed = true;
+        String toCheck = "";
+        toCheck = Line[0].ToString();
+        evaluateLine(Line);
+    }
+
+    String getNextPos(ArrayList Line)
+    {
+        ////Console.WriteLine("LineCAPACITY in getnext = " + Line.Capacity.ToString());
+        String toCheck = "";
+            toCheck = Line[0].ToString();
+        return toCheck;
+    }
+
+    ArrayList RemoveItemFromLine(ArrayList Line)
+    {
+
+        if(Line.Capacity > 1)
+        {
+            Line.RemoveAt(0);
+            Line.TrimToSize();
+            ////Console.WriteLine("Capacity in Remove =" + Line.Capacity);
+        }
+        else
+        {
+            Line.Add("End");
+            Line.RemoveAt(0);
+            Line.TrimToSize();
+        }
+        return Line;
     }
 }
+
+
