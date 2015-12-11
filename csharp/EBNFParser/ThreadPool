@@ -4,71 +4,109 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EbnfParser;
+using System.IO;
+using System.Collections;
 
-namespace EbnfParser
+namespace ConsoleApplication4
 {
+
     class TPool
     {
         private System.IO.StreamReader file =
         new System.IO.StreamReader("D:\\expressions.txt");
         int QueueLength;
         bool taskNotCompleted;
-        public Object thisLock = new Object();
+        int counter;
 
         public TPool()
         {
             taskNotCompleted = true;
             QueueLength = 0;
+            counter = 0;
         }
 
-        public void addTaskToQueue(TPool poolObj)
+        public void addTaskToQueue(TPool poolObj, ArrayList Line)
         {
-            String l = ReadTxt();
-            Console.WriteLine("Z28" + l);
             ThreadPool.QueueUserWorkItem(
-            o => poolObj.parsLine(l));
+            o => parsLine(Line));
             QueueLength++;
         }
-        private string ReadTxt()
-        {
-            string line = "";
-            if(file.ReadLine() == null)
-            {
-                QueueLength = 0;
-                taskNotCompleted = false;
-            }
-            else
-            {
-            line = file.ReadLine();
-            }
 
-            return line;
+
+
+        ArrayList getTxt()
+        {
+            string text = file.ReadToEnd();
+            string[] lines = text.Split('\r');
+            ArrayList lineInDoc = new ArrayList();
+            foreach (string tsl in lines)
+            {
+                ArrayList charInLine = new ArrayList();
+                foreach (char c in tsl)
+                {   
+                    charInLine.Add(c.ToString());
+                }
+                if (charInLine.Capacity > 0)
+                {
+                    charInLine.RemoveAt(0);
+                }
+                charInLine.TrimToSize();
+                lineInDoc.Add(charInLine);
+            }
+            int counter = 0;
+            foreach (ArrayList x in lineInDoc)
+            {
+                ArrayList tmp = new ArrayList();
+                tmp = (ArrayList)lineInDoc[counter];
+                counter++;
+                ////Console.WriteLine(tmp.Capacity.ToString());
+                foreach (string tsl in tmp)
+                {
+                    ////Console.WriteLine("String from tmp =" + tsl);
+                }
+            }
+            lineInDoc.TrimToSize();
+            return lineInDoc;
         }
-        public void parsLine(String line)
-        {
-            Console.WriteLine("Parser=" +line);
-            EBNFParser parser = new EBNFParser();
 
-                    parser.parse(line);
-                    Thread.Sleep(100);
-                    QueueLength--;
-               
+        public void parsLine(ArrayList lineToParse)
+        {
+            Thread.Sleep(10000);
+            //Console.WriteLine("String from in linetoParse =");
+            foreach (string tsl in lineToParse)
+            {
+                Console.Write(tsl);
+            }
+            Console.WriteLine();
+            EBNFParser parser = new EBNFParser();
+            parser.parse(lineToParse, parser);
+            Thread.Sleep(10000);
+            QueueLength--;
         }
 
         public static void Main(String[] args)
         {
+            int counter = 0;
             TPool tPoolObj = new TPool();
-            ThreadPool.SetMaxThreads(3,3);
-            while(tPoolObj.taskNotCompleted == true)
+            ThreadPool.SetMaxThreads(1, 1);
+            ArrayList lineInDoc = tPoolObj.getTxt();
+            foreach (ArrayList x in lineInDoc)
             {
-
-                tPoolObj.addTaskToQueue(tPoolObj);
+                ArrayList charInLine = new ArrayList();
+                charInLine = (ArrayList)lineInDoc[counter];
+                charInLine.TrimToSize();
+                tPoolObj.addTaskToQueue(tPoolObj, charInLine);
+                counter++;
             }
-            while (tPoolObj.QueueLength != 0)
+            while (tPoolObj.QueueLength != 0 || tPoolObj.QueueLength < 0)
             {
                 Thread.Sleep(1000);
             }
+            /*while (tPoolObj.taskNotCompleted == true)
+            {
+            }
+            */
         }
     }
+
 }
