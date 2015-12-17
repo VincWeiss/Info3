@@ -3,15 +3,20 @@ using System.Collections;
 
 public class EBNFParser
 {
-    public void parse(String lineToParse, EBNFParser p)
+    int paranthesisCounter;
+    public EBNFParser()
+    {
+        paranthesisCounter = 0;
+    }
+    public void parse(String lineToParse, EBNFParser parserObj)
     {
 
-        String endline = "";
-        endline = lineToParse;
-        p.checkFirstPosition(lineToParse, endline);
+        String completeLine = "";
+        completeLine = lineToParse;
+        parserObj.checkFirstPosition(lineToParse, completeLine);
     }
 
-    void checkFirstPosition(String Line, String endline)
+    void checkFirstPosition(String Line, String completeLine)
     {
         String toCheck = getNextPos(Line);
         switch (toCheck)
@@ -26,25 +31,25 @@ public class EBNFParser
             case "7":
             case "8":
             case "9":
-                checkForInt(Line, endline);
+                checkForInt(Line, completeLine);
                 break;
             case "x":
             case "y":
             case "z":
-                checkForVar(Line, endline);
+                checkForVar(Line, completeLine);
                 break;
             case "(":
-                checkForLParent(Line, endline);
+                checkForLParant(Line, completeLine);
                 break;
             default:
-                evaluateLine(Line, endline);
+                evaluateLine(Line, completeLine);
                 break;
         }
 
 
     }
 
-    void checkForInt(String Line, String endline)
+    void checkForInt(String Line, String completeLine)
     {
         String toCheck = getNextPos(Line);
         switch (toCheck)
@@ -60,27 +65,24 @@ public class EBNFParser
             case "8":
             case "9":
                 Line = RemoveItemFromLine(Line);
-                checkForInt(Line, endline);
+                checkForInt(Line, completeLine);
                 break;
             case "+":
             case "-":
             case "*":
             case "/":
-                checkForOperator(Line, endline);
+                checkForOperator(Line, completeLine);
                 break;
             case ")":
-                checkForRParent(Line, endline);
-                break;
-            case "End":
-                checkForEnd(Line, endline);
+                checkForRParant(Line, completeLine);
                 break;
             default:
-                evaluateLine(Line, endline);
+                evaluateLine(Line, completeLine);
                 break;
         }
     }
 
-    void checkForOperator(String Line, String endline)
+    void checkForOperator(String Line, String completeLine)
     {
         String toCheck = getNextPos(Line);
         switch (toCheck)
@@ -90,19 +92,19 @@ public class EBNFParser
             case "*":
             case "/":
                 Line = RemoveItemFromLine(Line);
-                checkForLParent(Line, endline);
+                checkForLParant(Line, completeLine);
                 break;
-            case "End":
-                checkForEnd(Line, endline);
+            case ")":
+                checkForRParant(Line, completeLine);
                 break;
             default:
-                evaluateLine(Line, endline);
+                evaluateLine(Line, completeLine);
                 break;
         }
 
     }
 
-    void checkForVar(String Line, String endline)
+    void checkForVar(String Line, String completeLine)
     {
         String toCheck = getNextPos(Line);
         switch (toCheck)
@@ -111,36 +113,33 @@ public class EBNFParser
             case "y":
             case "z":
                 Line = RemoveItemFromLine(Line);
-                checkForRParent(Line, endline);
-                break;
-            case "End":
-                checkForEnd(Line, endline);
+                checkForRParant(Line, completeLine);
                 break;
             default:
-                evaluateLine(Line, endline);
+                evaluateLine(Line, completeLine);
                 break;
         }
     }
-    void evaluateLine(String Line, String endline)
+    void evaluateLine(String Line, String completeLine)
     {
 
-        if (Line.Length <= 1 )
+        if (Line.Length == 1 && paranthesisCounter == 0)
         {
-            Console.WriteLine("The Line is valid " + endline );
+            Console.WriteLine("The Line is valid " + completeLine);
         }
         else
         {
-            Console.WriteLine("The Line is not valid " + endline );
+            Console.WriteLine("The Line is not valid " + completeLine);
         }
-      
 
     }
 
-    void checkForLParent(String Line, String endline)
+    void checkForLParant(String Line, String completeLine)
     {
         String toCheck = getNextPos(Line);
         if (toCheck == "(")
         {
+            paranthesisCounter++;
             Line = RemoveItemFromLine(Line);
         }
         switch (toCheck)
@@ -155,49 +154,42 @@ public class EBNFParser
             case "7":
             case "8":
             case "9":
-                checkForInt(Line, endline);
-
+                checkForInt(Line, completeLine);
                 break;
             case "x":
             case "y":
             case "z":
-                checkForVar(Line, endline);
+                checkForVar(Line, completeLine);
                 break;
             case "(":
-                checkForLParent(Line, endline);
+                checkForLParant(Line, completeLine);
                 break;
             default:
-                evaluateLine(Line,endline);
+                evaluateLine(Line, completeLine);
                 break;
         }
     }
 
-    void checkForRParent(String Line, String endline)
+    void checkForRParant(String Line, String completeLine)
     {
         String toCheck = getNextPos(Line);
         if (toCheck == ")")
         {
+            paranthesisCounter--;
             Line = RemoveItemFromLine(Line);
         }
-        checkForOperator(Line, endline);
-    }
-
-    void checkForEnd(String Line, String endline)
-    {
-        String toCheck = "";
-        toCheck = Line[0].ToString();
-        evaluateLine(Line, endline);
+        checkForOperator(Line, completeLine);
     }
 
     String getNextPos(String Line)
     {
-        
         String toCheck = "";
         if (Line.Length != 0)
         {
             toCheck = Line[0].ToString();
         }
-        else {
+        else
+        {
             toCheck = "Error";
         }
         return toCheck;
@@ -206,11 +198,7 @@ public class EBNFParser
     String RemoveItemFromLine(String Line)
     {
         String shorterLine = "";
-        if (Line.Length > 1)
-        {
-            shorterLine = Line.Remove(0,1);
-        }
-        
+        shorterLine = Line.Remove(0, 1);
         return shorterLine;
     }
 }
