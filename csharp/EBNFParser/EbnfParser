@@ -5,13 +5,13 @@ using System.Collections;
 public class EBNFParser
 {
     int paranthesisCounter;
-    
+
     //the constructor of the EBNFParser with the paranthesisCounter set to 0
     public EBNFParser()
     {
         paranthesisCounter = 0;
     }
-    
+
     //@param String lineToParse, EBNFParser parserObj
     //gets the string and the parser object and starts the parsing process with both
     public void parse(String lineToParse, EBNFParser parserObj)
@@ -20,7 +20,7 @@ public class EBNFParser
         completeLine = lineToParse;
         parserObj.checkFirstPosition(lineToParse, completeLine);
     }
-    
+
     //@param String Line, String completeLine
     //checks for the first character, does not delete
     void checkFirstPosition(String Line, String completeLine)
@@ -53,7 +53,7 @@ public class EBNFParser
                 break;
         }
     }
-    
+
     //@param String Line, String completeLine
     //checks wether the next character is an integer
     void checkForInt(String Line, String completeLine)
@@ -88,7 +88,7 @@ public class EBNFParser
                 break;
         }
     }
-    
+
     //@param String Line, String completeLine
     //checks wether the next character is an operator
     void checkForOperator(String Line, String completeLine)
@@ -111,7 +111,7 @@ public class EBNFParser
                 break;
         }
     }
-    
+
     //@param String Line, String completeLine
     //checks wether the next character is an variable
     void checkForVar(String Line, String completeLine)
@@ -130,12 +130,12 @@ public class EBNFParser
                 break;
         }
     }
-    
+
     //@param String Line, String completeLine
     //checks if the line is valid or not 
     void evaluateLine(String Line, String completeLine)
     {
-        if (Line.Length == 1 && paranthesisCounter == 0)
+        if (Line.Length <= 1 && paranthesisCounter == 0)
         {
             Console.WriteLine("The Line is valid " + completeLine);
         }
@@ -144,7 +144,7 @@ public class EBNFParser
             Console.WriteLine("The Line is not valid " + completeLine);
         }
     }
-    
+
     //@param String Line, String completeLine
     //checks wether the next character is a left paranthesis
     void checkForLParant(String Line, String completeLine)
@@ -182,7 +182,7 @@ public class EBNFParser
                 break;
         }
     }
-    
+
     //@param String Line, String completeLine
     //checks wether the next character is a right paranthesis
     void checkForRParant(String Line, String completeLine)
@@ -195,7 +195,7 @@ public class EBNFParser
         }
         checkForOperator(Line, completeLine);
     }
-    
+
     //@param String Line
     //checks for the end of the line and returns the next character
     //@return String toCheck
@@ -212,7 +212,7 @@ public class EBNFParser
         }
         return toCheck;
     }
-    
+
     //@param String Line
     //removes the character at index 0 and returns the shorter line
     //@return String shorterLine
