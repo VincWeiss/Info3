@@ -1,0 +1,32 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace EbnfParserProject
+{
+    class Program
+    {
+        //the start method for the threadpool program and the 
+        //EBNFParser programm
+        static void Main(string[] args)
+        {
+            int counter = 0;
+            TPool tPoolObj = new TPool();
+            ThreadPool.SetMaxThreads(1, 1);
+            ArrayList lineList = tPoolObj.getTxt();
+            foreach (String line in lineList)
+            {
+                tPoolObj.addTaskToQueue(tPoolObj, line);
+                counter++;
+            }
+            while (tPoolObj.QueueLength != 0 || tPoolObj.QueueLength < 0)
+            {
+                Thread.Sleep(100);
+            }
+        }
+    }
+}
