@@ -25,7 +25,7 @@ namespace ConsoleApplication4
             counter = 0;
         }
 
-        public void addTaskToQueue(TPool poolObj, ArrayList Line)
+        public void addTaskToQueue(TPool poolObj, String Line)
         {
             ThreadPool.QueueUserWorkItem(
             o => parsLine(Line));
@@ -36,51 +36,24 @@ namespace ConsoleApplication4
 
         ArrayList getTxt()
         {
+            ArrayList LineList = new ArrayList();
             string text = file.ReadToEnd();
-            string[] lines = text.Split('\r');
-            ArrayList lineInDoc = new ArrayList();
-            foreach (string tsl in lines)
+            string[] lines = text.Split('\n');
+            foreach ( String sack in lines)
             {
-                ArrayList charInLine = new ArrayList();
-                foreach (char c in tsl)
-                {   
-                    charInLine.Add(c.ToString());
-                }
-                if (charInLine.Capacity > 0)
-                {
-                    charInLine.RemoveAt(0);
-                }
-                charInLine.TrimToSize();
-                lineInDoc.Add(charInLine);
+                LineList.Add(sack);
             }
-            int counter = 0;
-            foreach (ArrayList x in lineInDoc)
-            {
-                ArrayList tmp = new ArrayList();
-                tmp = (ArrayList)lineInDoc[counter];
-                counter++;
-                ////Console.WriteLine(tmp.Capacity.ToString());
-                foreach (string tsl in tmp)
-                {
-                    ////Console.WriteLine("String from tmp =" + tsl);
-                }
-            }
-            lineInDoc.TrimToSize();
-            return lineInDoc;
+            
+            LineList.TrimToSize();
+            return LineList;
         }
 
-        public void parsLine(ArrayList lineToParse)
+        public void parsLine(String lineToParse)
         {
-            Thread.Sleep(10000);
-            //Console.WriteLine("String from in linetoParse =");
-            foreach (string tsl in lineToParse)
-            {
-                Console.Write(tsl);
-            }
-            Console.WriteLine();
+            Thread.Sleep(1000);
             EBNFParser parser = new EBNFParser();
             parser.parse(lineToParse, parser);
-            Thread.Sleep(10000);
+            Thread.Sleep(1000);
             QueueLength--;
         }
 
@@ -90,22 +63,16 @@ namespace ConsoleApplication4
             TPool tPoolObj = new TPool();
             ThreadPool.SetMaxThreads(1, 1);
             ArrayList lineInDoc = tPoolObj.getTxt();
-            foreach (ArrayList x in lineInDoc)
+            foreach (String x in lineInDoc)
             {
-                ArrayList charInLine = new ArrayList();
-                charInLine = (ArrayList)lineInDoc[counter];
-                charInLine.TrimToSize();
-                tPoolObj.addTaskToQueue(tPoolObj, charInLine);
+                tPoolObj.addTaskToQueue(tPoolObj, x);
                 counter++;
             }
             while (tPoolObj.QueueLength != 0 || tPoolObj.QueueLength < 0)
             {
                 Thread.Sleep(1000);
             }
-            /*while (tPoolObj.taskNotCompleted == true)
-            {
-            }
-            */
+            
         }
     }
 
