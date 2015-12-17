@@ -15,20 +15,16 @@ namespace ConsoleApplication4
         private System.IO.StreamReader file =
         new System.IO.StreamReader("D:\\expressions.txt");
         int QueueLength;
-        bool taskNotCompleted;
-        int counter;
 
         public TPool()
         {
-            taskNotCompleted = true;
             QueueLength = 0;
-            counter = 0;
         }
 
-        public void addTaskToQueue(TPool poolObj, String Line)
+        public void addTaskToQueue(TPool poolObj, String lineToParse)
         {
             ThreadPool.QueueUserWorkItem(
-            o => parsLine(Line));
+            o => parseLine(lineToParse));
             QueueLength++;
         }
 
@@ -36,23 +32,23 @@ namespace ConsoleApplication4
 
         ArrayList getTxt()
         {
-            ArrayList LineList = new ArrayList();
-            string text = file.ReadToEnd();
-            string[] lines = text.Split('\n');
-            foreach ( String sack in lines)
+            ArrayList lineList = new ArrayList();
+            string completeText = file.ReadToEnd();
+            string[] lines = completeText.Split('\n');
+            foreach (String tempString in lines)
             {
-                LineList.Add(sack);
+                lineList.Add(tempString);
             }
-            
-            LineList.TrimToSize();
-            return LineList;
+
+            lineList.TrimToSize();
+            return lineList;
         }
 
-        public void parsLine(String lineToParse)
+        public void parseLine(String lineToParse)
         {
             Thread.Sleep(1000);
-            EBNFParser parser = new EBNFParser();
-            parser.parse(lineToParse, parser);
+            EBNFParser parserObject = new EBNFParser();
+            parserObject.parse(lineToParse, parserObject);
             Thread.Sleep(1000);
             QueueLength--;
         }
@@ -62,17 +58,17 @@ namespace ConsoleApplication4
             int counter = 0;
             TPool tPoolObj = new TPool();
             ThreadPool.SetMaxThreads(1, 1);
-            ArrayList lineInDoc = tPoolObj.getTxt();
-            foreach (String x in lineInDoc)
+            ArrayList lineList = tPoolObj.getTxt();
+            foreach (String line in lineList)
             {
-                tPoolObj.addTaskToQueue(tPoolObj, x);
+                tPoolObj.addTaskToQueue(tPoolObj, line);
                 counter++;
             }
             while (tPoolObj.QueueLength != 0 || tPoolObj.QueueLength < 0)
             {
                 Thread.Sleep(1000);
             }
-            
+
         }
     }
 
