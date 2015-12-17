@@ -3,26 +3,15 @@ using System.Collections;
 
 public class EBNFParser
 {
-    public void parse(ArrayList lineToParse, EBNFParser p)
+    public void parse(String lineToParse, EBNFParser p)
     {
-        
+
         String endline = "";
-        foreach (string tsl in lineToParse)
-        {
-            endline += tsl;
-        }
-        if (lineToParse.Capacity < 1)
-        {
-            //Console.WriteLine("StartCapacity was too small!!!");
-        }
-        else
-        {
-            p.checkFirstPosition(lineToParse,endline);
-            //Console.WriteLine(endline);
-        }
+        endline = lineToParse;
+        p.checkFirstPosition(lineToParse, endline);
     }
 
-    void checkFirstPosition(ArrayList Line,String endline)
+    void checkFirstPosition(String Line, String endline)
     {
         String toCheck = getNextPos(Line);
         switch (toCheck)
@@ -47,12 +36,15 @@ public class EBNFParser
             case "(":
                 checkForLParent(Line, endline);
                 break;
+            default:
+                evaluateLine(Line, endline);
+                break;
         }
 
 
     }
 
-    void checkForInt(ArrayList Line,String endline)
+    void checkForInt(String Line, String endline)
     {
         String toCheck = getNextPos(Line);
         switch (toCheck)
@@ -67,7 +59,6 @@ public class EBNFParser
             case "7":
             case "8":
             case "9":
-                ////Console.Write(" INT|" + toCheck + "| ");
                 Line = RemoveItemFromLine(Line);
                 checkForInt(Line, endline);
                 break;
@@ -78,16 +69,18 @@ public class EBNFParser
                 checkForOperator(Line, endline);
                 break;
             case ")":
-                ////Console.Write(" )|" + toCheck + "| ");
                 checkForRParent(Line, endline);
                 break;
             case "End":
                 checkForEnd(Line, endline);
                 break;
+            default:
+                evaluateLine(Line, endline);
+                break;
         }
     }
 
-    void checkForOperator(ArrayList Line,String endline)
+    void checkForOperator(String Line, String endline)
     {
         String toCheck = getNextPos(Line);
         switch (toCheck)
@@ -96,18 +89,20 @@ public class EBNFParser
             case "-":
             case "*":
             case "/":
-                //Console.Write(" OP|" + toCheck + "| ");
                 Line = RemoveItemFromLine(Line);
                 checkForLParent(Line, endline);
                 break;
             case "End":
                 checkForEnd(Line, endline);
                 break;
+            default:
+                evaluateLine(Line, endline);
+                break;
         }
 
     }
 
-    void checkForVar(ArrayList Line,String endline)
+    void checkForVar(String Line, String endline)
     {
         String toCheck = getNextPos(Line);
         switch (toCheck)
@@ -115,40 +110,38 @@ public class EBNFParser
             case "x":
             case "y":
             case "z":
-                //Console.Write(" Var|" + toCheck + "| ");
                 Line = RemoveItemFromLine(Line);
                 checkForRParent(Line, endline);
                 break;
             case "End":
                 checkForEnd(Line, endline);
                 break;
+            default:
+                evaluateLine(Line, endline);
+                break;
         }
     }
-    void evaluateLine(ArrayList Line,String endline)
+    void evaluateLine(String Line, String endline)
     {
 
-        if (Line.Capacity == 1)
+        if (Line.Length <= 1 )
         {
-
-            Console.WriteLine();
-            Console.WriteLine(" ---The Line "+endline + " is valid---");
+            Console.WriteLine("The Line is valid " + endline );
         }
         else
         {
-            Console.WriteLine();
-            Console.WriteLine("---The Line " + endline+ " is NOT valid---");
+            Console.WriteLine("The Line is not valid " + endline );
         }
+      
 
     }
 
-    void checkForLParent(ArrayList Line,String endline)
+    void checkForLParent(String Line, String endline)
     {
         String toCheck = getNextPos(Line);
         if (toCheck == "(")
         {
-            //Console.WriteLine("(");
             Line = RemoveItemFromLine(Line);
-            Line.TrimToSize();
         }
         switch (toCheck)
         {
@@ -170,51 +163,54 @@ public class EBNFParser
             case "z":
                 checkForVar(Line, endline);
                 break;
-
+            case "(":
+                checkForLParent(Line, endline);
+                break;
+            default:
+                evaluateLine(Line,endline);
+                break;
         }
     }
 
-    void checkForRParent(ArrayList Line,String endline)
+    void checkForRParent(String Line, String endline)
     {
         String toCheck = getNextPos(Line);
         if (toCheck == ")")
         {
             Line = RemoveItemFromLine(Line);
-            Line.TrimToSize();
         }
         checkForOperator(Line, endline);
     }
 
-    void checkForEnd(ArrayList Line,String endline)
+    void checkForEnd(String Line, String endline)
     {
         String toCheck = "";
         toCheck = Line[0].ToString();
-        evaluateLine(Line,endline);
+        evaluateLine(Line, endline);
     }
 
-    String getNextPos(ArrayList Line)
+    String getNextPos(String Line)
     {
-        ////Console.WriteLine("LineCAPACITY in getnext = " + Line.Capacity.ToString());
+        
         String toCheck = "";
-        toCheck = Line[0].ToString();
+        if (Line.Length != 0)
+        {
+            toCheck = Line[0].ToString();
+        }
+        else {
+            toCheck = "Error";
+        }
         return toCheck;
     }
 
-    ArrayList RemoveItemFromLine(ArrayList Line)
+    String RemoveItemFromLine(String Line)
     {
-
-        if (Line.Capacity > 1)
+        String shorterLine = "";
+        if (Line.Length > 1)
         {
-            Line.RemoveAt(0);
-            Line.TrimToSize();
-            ////Console.WriteLine("Capacity in Remove =" + Line.Capacity);
+            shorterLine = Line.Remove(0,1);
         }
-        else
-        {
-            Line.Add("End");
-            Line.RemoveAt(0);
-            Line.TrimToSize();
-        }
-        return Line;
+        
+        return shorterLine;
     }
 }
