@@ -9,18 +9,21 @@ using System.Collections;
 
 namespace ConsoleApplication4
 {
-
+    /* in this class the text file is read, the threadpools get their task*/ 
     class TPool
     {
         private System.IO.StreamReader file =
         new System.IO.StreamReader("D:\\expressions.txt");
         int QueueLength;
-
+        
+        //constructor of ThreadPool class, sets the initial queue length
         public TPool()
         {
             QueueLength = 0;
         }
-
+        
+        //@param Tpool poolObj, String lineToParse
+        //assigns the tasks to the threadpool
         public void addTaskToQueue(TPool poolObj, String lineToParse)
         {
             ThreadPool.QueueUserWorkItem(
@@ -28,8 +31,8 @@ namespace ConsoleApplication4
             QueueLength++;
         }
 
-
-
+        //reads the Text file and makes strings out of it. 
+        //@return ArrayList lineList, it contains the lines
         ArrayList getTxt()
         {
             ArrayList lineList = new ArrayList();
@@ -43,7 +46,10 @@ namespace ConsoleApplication4
             lineList.TrimToSize();
             return lineList;
         }
-
+        
+        //@param String lineToParse
+        //creates a new parser object for each thread in threadpool and execute 
+        //the task given
         public void parseLine(String lineToParse)
         {
             Thread.Sleep(1000);
@@ -52,7 +58,8 @@ namespace ConsoleApplication4
             Thread.Sleep(1000);
             QueueLength--;
         }
-
+        
+        //to comment
         public static void Main(String[] args)
         {
             int counter = 0;
@@ -68,8 +75,6 @@ namespace ConsoleApplication4
             {
                 Thread.Sleep(1000);
             }
-
         }
     }
-
-}
+} // end of class
