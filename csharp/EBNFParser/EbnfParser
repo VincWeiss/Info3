@@ -190,8 +190,15 @@ public class EBNFParser
         String toCheck = getNextPos(Line);
         if (toCheck == ")")
         {
+            if(paranthesisCounter > 0)
+            {
             paranthesisCounter--;
             Line = RemoveItemFromLine(Line);
+            }
+            else
+            {
+                Line = "end";
+            }
         }
         checkForOperator(Line, completeLine);
     }
@@ -208,7 +215,7 @@ public class EBNFParser
         }
         else
         {
-            toCheck = "Error";
+            toCheck = "end";
         }
         return toCheck;
     }
