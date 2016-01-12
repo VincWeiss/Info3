@@ -1,0 +1,68 @@
+#include "stdafx.h"
+#include "FiltrableList.h"
+#include <list>
+#include <string>
+#include "typeinfo"
+#include <iostream>
+
+using namespace std;
+void add(float);
+void remove(float);
+bool hasElement(float);
+
+
+class FiltrableList {
+
+private:
+	list<float> floatList;
+	list<string> stringList;
+
+public:
+	//default Constructor
+	FiltrableList() {
+
+	}
+
+	void add(float e) {
+		if (typeid(e).name() == "float") {
+			cout << "The total float is: {0}" << typeid(e).name() << endl;
+			floatList.push_back(e);
+		}
+		else if (typeid(e).name() == "string") {
+			cout << "The total string is: {0}" << typeid(e).name() << endl;
+			floatList.push_back(e);
+		}
+	}
+
+	void remove(float e) {
+		if (typeid(e).name() == "float") {
+			cout << "The removable float is: {0}" << typeid(e).name() << endl;
+			floatList.remove(e);
+		}
+		else if (typeid(e).name() == "string") {
+			cout << "The removable string is: {0}" << typeid(e).name() << endl;
+			floatList.remove(e);
+		}
+	}
+
+	bool has(float e) {
+		float element;
+		bool isInList = false;
+		for each(element in floatList) {
+			if (element == e) {
+				isInList = true;
+			}
+		}
+		return isInList;
+	}
+
+	list<float> filter() {
+		float element;
+		list<float> result;
+		for each(element in floatList) {
+			//Func<T,boolean> l auf das element anwenden. 
+			result.push_back(element);
+		}
+		return result;
+	}
+};
