@@ -3,6 +3,7 @@
  
 #include "LE.h"
 #include <cstdlib>
+#include <string>
  
 template <class type>
 class FilterableList
@@ -201,21 +202,19 @@ public:
     }
 
 	//generate random Floats ---> neue Methde finden, die immer neue Zahlen generiert!!!!
-	float Numbers() {
+	float numbers() {
 		float r = ((static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) * 1000);
 		return r;
 	}
 
-	//generate random Strings
-	string gen_random() {
-		string word;
-		static const char alphanum[] =
-			"abcdefghijklmnopqrstuvwxyz";
-
-		for (int i = 0; i < 24; ++i) {
-			word += alphanum[rand() % (sizeof(alphanum) - 1)];
+	std::string randomString() {
+		std::string word = "";
+		char alphabet[] = "abcdefghijklmnopqrstuvwxyz";
+		int wordlenght = rand() % 20;
+		for (int i = 0; i < wordlenght; ++i) {
+			word += alphabet[rand() % (sizeof(alphabet) - 1)];
 		}
-		return s[len];
+		return word;
 	}
  
 };
