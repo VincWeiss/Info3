@@ -1,19 +1,35 @@
+// Lists.cpp : Defines the entry point for the console application.
+//
 
 #include "stdafx.h"
 #include "FiltrableList.cpp"
 #include <iostream>
-#include <cstdlib>
-
 using namespace std;
-class GenericList {
+int main();
 
-	int main() {
-		int amountOfEggs = 12;
-		cout << "The eggs and float is: {0}" << amountOfEggs << endl;
-		FiltrableList f = FiltrableList();
-		f.add(12);
+class Lists {
+	int main()
+	{
+		cout << "The----------------" << endl;
+		FiltrableList  f = FiltrableList();
+		Lists l = Lists();
+		f.add(2.0f);
+		//f.add(1,555f);
+		//f.add("scha");
+		//f.add(l.randomNumber());
+		//f.has(l.randomNumber());
+		//f.add("hjdsjhfsd");
+		//f.add("ssdd");
+		//f.add("dsfhjSS");
+		//f.remove(l.randomNumber());
+		//f.has("scha");
+		//f.remove("ssdd");
 		return 0;
 	}
+
+	float randomNumber() {
+		float randomNum = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) * 1000;
+		return randomNum;
+	}
+
 };
-
-
