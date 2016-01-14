@@ -1,17 +1,20 @@
 #include "stdafx.h"
-#include "FiltrableList.h"
 #include <list>
 #include <string>
 #include "typeinfo"
 #include <iostream>
 
 using namespace std;
-void add(float);
-void remove(float);
-bool hasElement(float);
 
+template <class T>
+void add(T);
+template <class T>
+void remove(T);
+template <class T>
+bool has(T);
 
 class FiltrableList {
+
 
 private:
 	list<float> floatList;
@@ -19,38 +22,67 @@ private:
 
 public:
 	//default Constructor
-	FiltrableList() {
+	FiltrableList(){
 
 	}
 
-	void add(float e) {
-		if (typeid(e).name() == "float") {
-			cout << "The total float is: {0}" << typeid(e).name() << endl;
-			floatList.push_back(e);
+	template <class T>
+ 	void add(T e) {
+		string type = typeid(e).name();
+		string temp = e;
+		float helper = ::stof(temp.c_str());
+		cout << "You have a -: " << typeid(e).name() << "\n";
+		if (type == "float") {
+			cout << "The typeid : " << typeid(e).name() << "\n";
+			floatList.push_back(helper);
 		}
-		else if (typeid(e).name() == "string") {
-			cout << "The total string is: {0}" << typeid(e).name() << endl;
-			floatList.push_back(e);
+		else if (type == "string") {
+			cout << "The total string is: " << typeid(e).name() << endl;
+			stringList.push_back(e);
 		}
+		cout << "floatListe Size ---: " << floatList.size() << endl;
+		cout << "stringList Size ---: " << stringList.size() << endl;
 	}
 
-	void remove(float e) {
-		if (typeid(e).name() == "float") {
+	template <class T>
+	void remove(T e) {
+		string type = typeid(e).name();
+		string temp = e;
+		float helper = ::stof(temp.c_str());
+		if (type == "float") {
+			floatList.remove(helper);
 			cout << "The removable float is: {0}" << typeid(e).name() << endl;
-			floatList.remove(e);
 		}
-		else if (typeid(e).name() == "string") {
+		else if (type == "string") {
 			cout << "The removable string is: {0}" << typeid(e).name() << endl;
-			floatList.remove(e);
+			stringList.remove(e);
 		}
+		cout << "floatListe Size after removing: " << floatList.size() << endl;
+		cout << "stringlist Size after removing: " << stringList.size() << endl;
 	}
 
-	bool has(float e) {
-		float element;
+	template <class T>
+	bool has(T e) {
+		string type = typeid(e).name();
+		string temp = e;
+		float helper = ::stof(temp.c_str());
 		bool isInList = false;
-		for each(element in floatList) {
-			if (element == e) {
-				isInList = true;
+		if (type == "float") {
+			float element;
+			for each(element in floatList) {
+				if (element == helper) {
+					isInList = true;
+					cout << "has element : " << e << endl;
+				}//ausgabe für, wenn element nicht drin ist
+			}
+		}
+		else if (type == "string") {
+			string element;
+			for each(element in stringList) {
+				if (element == e) {
+					isInList = true;
+					cout << "has element : " << e << endl;
+				}//ausgabe für, wenn element nicht drin ist
 			}
 		}
 		return isInList;
