@@ -1,22 +1,26 @@
 #ifndef _LISTE_H_
 #define _LISTE_H_
- 
 #include "LE.h"
 #include <cstdlib>
 #include <string>
- 
+#include <list>
+#include <algorithm>
+#include <vector>
+#include <functional>
+
+using namespace std;
+
 template <class type>
 class FilterableList
 {
  
 private:
- 
+	
 	LE <type>* first;
     LE <type>* last;
     size_t size;
      
 public:
- 
     //Standard Konstruktor zum erstellen einer leeren Liste
     FilterableList()
     {
@@ -25,18 +29,27 @@ public:
         size = 0;
     }
  
-    //Destruktor zum lφschen der Liste
+    //Destruktor zum l?schen der Liste
     ~FilterableList()
     {
         removeFirst();
     }
  
-    //Filtert die Liste bezόglich der Elemente
-   // FilterableList<type> filter (Func<type, boolean> l){
-         
-        //Todo.. Lambda quatsch mόsst ich grad selber nachschauen und muss essen gehen ;P
-    //}
-     
+    //Filtert die Liste bez?glich der Elemente
+	FilterableList<type> filter(std::function<type(type)>func) {
+		vector <type> lambdaResult;
+		for_each(get(1), get(size), [=](type e){
+			if (func(e)) {
+				lambdaResult.push_back(e);
+			}
+		});
+		return lambdaResult;
+	}
+
+		//Func<type, boolean> l
+        //Todo.. Lambda quatsch m?sst ich grad selber nachschauen und muss essen gehen ;P
+		// auto addtwointegers = [](int x) -> function<int(int)> { return [=](int y) { return x + y; };
+
     //Funktion um zu ermitteln ob die Liste leer ist
     bool empty()
     {
@@ -50,11 +63,11 @@ public:
         }
     }
  
-    //Funktion um ein Element (@param value) hinten an die Liste anzufόgen
+    //Funktion um ein Element (@param value) hinten an die Liste anzuf?gen
     void add(type value)
     {
-        // Ein neues Listenelemente fόr den Wert erzeugen.
-        // Das neue Element hat keinen Nachfolger, aber einen Vorgδnger
+        // Ein neues Listenelemente f?r den Wert erzeugen.
+        // Das neue Element hat keinen Nachfolger, aber einen Vorg?nger
         LE<type>* newLE = new LE<type>(value,last);
  
         if(first == 0)
@@ -78,7 +91,7 @@ public:
     }
  
      
-    //Funktion um ein Element, das vorne an der Liste steht, zu lφschen
+    //Funktion um ein Element, das vorne an der Liste steht, zu l?schen
     void removeFirst()
     {
         if(first != 0)
@@ -95,8 +108,25 @@ public:
             }
         }
     }
+
+	//get first item of the list
+	type& getFirst() {
+		LE<type>* element;
+		if (first == 0) {
+			element = last;
+		}
+		else {
+			element =  LE<type>* nextFirstLE = first->next;
+		}
+		return element;
+	}
+
+	//get last item of the list
+	type& getLast() {
+		return last;
+	}
  
-    //Funktion um ein Element, das hinten an der Liste steht, zu lφschen
+    //Funktion um ein Element, das hinten an der Liste steht, zu l?schen
     void removeLast()
     {
         if(first != 0)
@@ -115,7 +145,7 @@ public:
     }
  
      
-    //Funktion um ein Element an Stelle #index zu lφschen
+    //Funktion um ein Element an Stelle #index zu l?schen
     void remove(unsigned int index){
          
         unsigned int count = 0;
@@ -151,7 +181,7 @@ public:
         delete actualE;
     }
  
-    //Funktion zur ermittlung der grφίe der Liste
+    //Funktion zur ermittlung der gr??e der Liste
     int getSize() const
     {
         LE *listRunner = first;
@@ -166,7 +196,7 @@ public:
     }
  
      
-    //Methode zur Rόckgabe des LE am angegebenen Index
+    //Methode zur R?ckgabe des LE am angegebenen Index
     type& has(type valueWanted)
     {
         LE<type>* listRunner = first;
@@ -187,7 +217,7 @@ public:
     }
      
      
-    //Methode zur Rόckgabe des LE am angegebenen Index
+    //Methode zur R?ckgabe des LE am angegebenen Index
     type& get(unsigned int index)
     {
         LE<type>* listRunner = first;
