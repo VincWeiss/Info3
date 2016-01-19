@@ -1,14 +1,10 @@
-// TestFL.cpp : Defines the entry point for the console application.
-//
-#include "stdafx.h"
-#include "Flist.h"
+#include "FilterList.h"
+#include "MaxSumLambda.h"
 #include <string>
 #include <iostream>
 #include <vector>
-#include "MaxSum.h"
 
 using namespace std;
-
 
 int main()
 {
@@ -26,7 +22,7 @@ int main()
 	f.add(f.numbers(-5));
 	f.add(f.numbers(400));
 	f.add(-0.5f);
-	cout << "floatList size: "<< f.getSize() << endl;
+	cout << "floatList size: " << f.getSize() << endl;
 	f.filter([](float x) ->bool {return x < 0; });
 	f.filter([](float x) ->bool {return x <= 5; });
 	f.filter([](int x) ->bool {return x % 2; });
@@ -35,9 +31,17 @@ int main()
 	s.filter([](string x) {return x.find('s'); });
 
 	//AUFGABE 1.2
-	MaxSum ms = MaxSum();
-	ms.sum([](int x) ->int {return (x^2) + 2; }, 1 , 3);
+	MaxSumLambda ms = MaxSumLambda();
+	ms.sum([](int x) ->int {return (x*x) + 7*x; }, 2, 4);
 
-    return 0;
+	vector<lambda> floatLambdas = {
+		[](float x) -> float { return x - 1; },
+		[](float x) -> float { return x*x; },
+		[](float x) -> float { return x / 5; }
+	};
+
+	ms.max(floatLambdas, 2.5);
+	system("pause");
+
+	return 0;
 }
-
