@@ -1,10 +1,8 @@
-#ifndef _FLIST_H_
-#define _FLIST_H_
-#include "stdafx.h"
-#include "FList.h"
+#ifndef _FILTERLIST_H_
+#define _FILTERLIST_H_
+#include "FilterLIst.h"
 #include <cstdlib>
 #include <string>
-#include <list>
 #include <algorithm>
 #include <vector>
 #include <functional>
@@ -16,82 +14,65 @@ class FilterableList
 {
 
 private:
-
+	//variable initializing
 	vector <type> filterList;
 
 
 public:
-	//Standard Konstruktor zum erstellen einer leeren Liste
+	//Constructor. Creates an empty FilterableList object
 	FilterableList()
 	{
 		filterList;
 	}
 
-	//Destruktor zum l?schen der Liste
+	//Destructor. Deletes the FilterableList object
 	~FilterableList()
 	{
-		//removeFirst();
+		
 	}
 
-	//Filtert die Liste bez?glich der Elemente
+	//@param function<bool(type)> func
+	//gets a lambda expression and returns true if element in the vector is conform with expression
+	//safes all comform elements to new list
+	//return vector <type> lambdaResult
 	vector <type> filter(std::function<bool(type)> func) {
 		vector <type> lambdaResult;
 		for (int i = 0; i < filterList.size(); i++) {
 			if (func(filterList[i])) {
 				lambdaResult.push_back(filterList[i]);
-				cout << "added to lambda result List : "<< filterList[i] << endl;
+				cout << "added to lambda result List : " << filterList[i] << endl;
 			}
 		}
 		return lambdaResult;
 	}
 
-	//Todo.. Lambda quatsch m?sst ich grad selber nachschauen und muss essen gehen ;P
-
-	//Funktion um zu ermitteln ob die Liste leer ist
-	bool empty()
-	{
-		if (filterList.size() == 0)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	//Funktion um ein Element (@param value) hinten an die Liste anzuf?gen
+	//@param type value
+	//adds a float or string type to the vector
 	void add(type value)
 	{
 		filterList.push_back(value);
 		cout << "added a : " << value << " to list " << endl;
 	}
 
-	size_t getSize()
-	{
-		return filterList.size();
-	}
-
-
-	//Funktion um ein Element, das vorne an der Liste steht, zu l?schen
-	void removeFirst()
-	{
-		if (filterList.size() != 0)
-		{
-			filterList.erase(0);
-		}
-	}
-
-
-	//Funktion um ein Element an Stelle #index zu l?schen
+	//@param type value
+	//search the value in list and delates it if found
 	void remove(type value) {
 		if (value != NULL) {
-			filterList.erase(0);
+			for (int i = 0; i < filterList.size(); i++) {
+				if (filterList[i] == value) {
+					filterList.erase(i);
+				}
+				else {
+					cout << "element to delate not found in list" << endl;
+				}
+			}
 		}
 	}
 
 
-	//Methode zur R?ckgabe des LE am angegebenen Index
+	//@param type valueWanted
+	//searches the list for element and returns true if element was found
+	//return bool hasE
 	type& has(type valueWanted)
 	{
 		boolean hasE = false;
@@ -109,7 +90,15 @@ public:
 		return hasE;
 	}
 
-	//generate random Floats ---> neue Methde finden, die immer neue Zahlen generiert!!!!
+	//returns the size of actual list
+	//return size_t 
+	size_t getSize() {
+		return filterList.size();
+	}
+
+	//@param int num
+	//generates a random float for the list
+	//return float x
 	float numbers(int num) {
 		float x = 0.0f;
 		if (num < 1) {
@@ -117,13 +106,14 @@ public:
 		}
 		else {
 			for (int i = 0; i < num; i++) {
-				x = ((static_cast <float> (rand()) / static_cast <float> (RAND_MAX)+1)*100);
+				x = ((static_cast <float> (rand()) / static_cast <float> (RAND_MAX) + 1) * 100);
 			}
 		}
 		return x;
 	}
 
-	//generate random strings
+	//generate random strings for string list
+	//return string word
 	std::string randomString() {
 		std::string word = "";
 		char alphabet[] = "abcdefghijklmnopqrstuvwxyz";
@@ -136,4 +126,3 @@ public:
 
 };
 #endif //_LISTE_INCLUDED
-
