@@ -40,7 +40,7 @@ public:
 		for (int i = 0; i < filterList.size(); i++) {
 			if (func(filterList[i])) {
 				lambdaResult.push_back(filterList[i]);
-				cout << "added to lambda result List : " << filterList[i] << endl;
+				cout << "added to lambda result list : " << filterList[i] << endl;
 			}
 		}
 		return lambdaResult;
@@ -99,17 +99,12 @@ public:
 	//@param int num
 	//generates a random float for the list
 	//return float x
-	float numbers(int num) {
+	float numbers() {
 		float x = 0.0f;
-		if (num < 1) {
-			cout << "You have to add at least one number." << endl;
-		}
-		else {
-			for (int i = 0; i < num; i++) {
-				x = ((static_cast <float> (rand()) / static_cast <float> (RAND_MAX) + 1) * 100);
-			}
-		}
-		return x;
+		float y = 0.0f;
+		x = ((static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) * 10);
+		y = ((static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) * -10);
+		return x + y;
 	}
 
 	//generate random strings for string list
@@ -117,7 +112,7 @@ public:
 	std::string randomString() {
 		std::string word = "";
 		char alphabet[] = "abcdefghijklmnopqrstuvwxyz";
-		int wordlenght = rand() % 20;
+		int wordlenght = rand() % 10;
 		for (int i = 0; i < wordlenght; ++i) {
 			word += alphabet[rand() % (sizeof(alphabet) - 1)];
 		}
