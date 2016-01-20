@@ -22,7 +22,7 @@ MaxSumLambda::~MaxSumLambda() {
 // return int result
 int MaxSumLambda::sum(std::function<int(int)> func, int lo, int hi) { // 5 und 10
 	int result = 0;
-	for (int i = lo; i < hi; i++) {
+	for (int i = (lo+1); i < hi; i++) {
 		result = result + func(i);
 	}
 	cout << "the result of sum between "<< lo <<" and " << hi << " is : " << result << endl;
@@ -47,7 +47,7 @@ lambda MaxSumLambda::max(vector<lambda> functions, float x) { //vector = x -1 ; 
 	}
 
 	vector<float>::iterator maxElementIterator = max_element(results.begin(), results.end());
-	cout << "max ELEMENT ist : " << maxElementIterator[0] << endl;
+	cout << "the max element is : " << maxElementIterator[0] << endl;
 	return functions[distance(results.begin(), maxElementIterator)];
 
 }
