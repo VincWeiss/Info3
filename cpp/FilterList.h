@@ -1,17 +1,16 @@
 #ifndef _FILTERLIST_H_
 #define _FILTERLIST_H_
-#include "FilterLIst.h"
 #include <cstdlib>
 #include <string>
 #include <algorithm>
 #include <vector>
 #include <functional>
+#include <typeinfo>
 
 using namespace std;
 
 template <class type>
-class FilterableList
-{
+class FilterableList{
 
 private:
 	//variable initializing
@@ -35,12 +34,11 @@ public:
 	//gets a lambda expression and returns true if element in the vector is conform with expression
 	//safes all comform elements to new list
 	//return vector <type> lambdaResult
-	vector <type> filter(std::function<bool(type)> func) {
-		vector <type> lambdaResult;
+	FilterableList <type> filter(std::function<bool(type)> func) {
+		FilterableList <type> lambdaResult;
 		for (int i = 0; i < filterList.size(); i++) {
 			if (func(filterList[i])) {
-				lambdaResult.push_back(filterList[i]);
-				cout << "added to lambda result list : " << filterList[i] << endl;
+				lambdaResult.add(filterList[i]);
 			}
 		}
 		return lambdaResult;
@@ -48,60 +46,85 @@ public:
 
 	//@param type value
 	//adds a float or string type to the vector
-	void add(type value)
-	{
+	void add(type value){
 		filterList.push_back(value);
-		cout << "added a : " << value << " to list " << endl;
 	}
 
 	//@param type value
-	//search the value in list and delates it if found
+	//search the value in list and deletes it if found
 	void remove(type value) {
-		if (value != NULL) {
-			for (int i = 0; i < filterList.size(); i++) {
-				if (filterList[i] == value) {
-					filterList.erase(i);
-				}
-				else {
-					cout << "element to delate not found in list" << endl;
-				}
+		for (int i = 0; i < filterList.size(); i++) {
+			if (filterList[i] == value) {
+				cout << "deleted : " << value << endl;
+				filterList.erase(filterList.begin() + i);
 			}
 		}
+	}
+
+	//gets the first element from list
+	//return filterList[0]
+	type getFirst() {
+		return filterList[0];
 	}
 
 
 	//@param type valueWanted
 	//searches the list for element and returns true if element was found
 	//return bool hasE
-	type& has(type valueWanted)
-	{
-		boolean hasE = false;
-		if (valueWanted != NULL) {
-			for (int i = 0; i <= filterList.size(); i++) {
-				if (filterList[i] == valueWanted) {
-					hasE = true;
-				}
-				else {
-					hasE = false;
-				}
+	bool has(type valueWanted){
+		bool hasE = false;
+		for (int i = 0; i <= filterList.size(); i++) {
+			if (filterList[i] == valueWanted) {
+				hasE = true;
 			}
 		}
-
 		return hasE;
 	}
 
 	//returns the size of actual list
 	//return size_t 
 	size_t getSize() {
+		if (filterList.size() == 0) {
+			throw invalid_argument("vector size is 0");
+		}
 		return filterList.size();
+	}
+
+	//gets all elements from the FilterableList to a vector 
+	//returns a vector with these elements
+	//return allListElements
+	vector <type> getAll() {
+		vector <type> allListElements;
+		if (filterList.size() == 0) {
+			throw invalid_argument("vector to copy is empty");
+		}
+		for (int i = 0; i < filterList.size(); i++) {
+			allListElements.push_back(filterList[i]);
+		}
+		return allListElements;
+	}
+
+	//@param vector <type> vec
+	//method to print all results of the vector
+	//if i == vector size - stopp (endl) 
+	void printResult(vector <type> vec) {
+		if (vec.size() == 0) {
+			throw invalid_argument("vector to print is empty");
+		}
+		for (int i = 0; i < vec.size(); i++) {
+			cout << vec[i] << " || ";
+			if (i == (vec.size() - 1)) {
+				cout << endl;
+			}
+		}
 	}
 
 	//@param int num
 	//generates a random float for the list
 	//return float x
-	float numbers() {
-		float x = 0.0f;
-		float y = 0.0f;
+	float randomNumbers() {
+		float x;
+		float y;
 		x = ((static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) * 10);
 		y = ((static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) * -10);
 		return x + y;
@@ -109,8 +132,8 @@ public:
 
 	//generate random strings for string list
 	//return string word
-	std::string randomString() {
-		std::string word = "";
+	string randomString() {
+		string word = "";
 		char alphabet[] = "abcdefghijklmnopqrstuvwxyz";
 		int wordlenght = rand() % 10;
 		for (int i = 0; i < wordlenght; ++i) {
