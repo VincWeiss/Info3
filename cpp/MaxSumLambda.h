@@ -26,7 +26,6 @@ public:
 	//in each of the functions. Returns a function at index biggest x found.
 	//return vector<lambda> functions
 	lambda max(vector<lambda> functions, float x);
-
 };
 
 #endif //_MAXSUMLAMBDA_INCLUDED
